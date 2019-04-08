@@ -17,6 +17,9 @@
 #include <iostream>
 #include <cmath>
 #include <ctime>
+#include <stdio.h>
+#include <list>
+#include <iterator>
 
 using namespace std;
 
@@ -36,6 +39,128 @@ static struct timeval last_idle_time;
 #ifdef __linux__
 #include <glut.h>
 #endif
+
+int width = 400;
+int height = 300;
+int size = 10;
+
+class Object {
+
+public:
+    float x;
+    float y;
+    float angle;
+    float speed;
+    //int width;
+    //int height;
+    //int image[];
+    bool inGame;
+
+    Object(/*int _image[], int _width, int _height, float _speed*/)
+    {
+        x = 0;
+        y = 0;
+        angle = 90;
+        speed = 5;
+        inGame = true;
+        /*
+        width = _width;
+        height = _height;
+
+        int length = width*height;
+
+        image[length];
+        for(int i=0; i<length; i++)
+        {
+            image[i] = _image[i];
+        }
+        */
+    }
+
+
+    void DrawBullet()
+    {
+        if((x < 0 || x > width) && (y < 0 || y > height))
+        {
+            inGame = false;
+            return;
+        }
+
+        glPushMatrix();
+        {
+            glTranslatef(x,y,0);
+            glRotatef(angle,0,0,1);
+            float size = 5/2;
+            glBegin(GL_POLYGON);
+              glVertex2f(-size,-size);
+              glVertex2f(-size,size);
+              glVertex2f(size,size);
+              glVertex2f(size,-size);
+              glVertex2f(-size,-size);
+            glEnd();
+        }
+        glPopMatrix();
+    }
+
+    void MoveObject()
+    {
+        float degree = angle * (M_PI/180);
+        x += cos(degree) * speed;
+        y += sin(degree) * speed;
+    }
+};
+
+class PlayerShip{
+private:
+    int MAXBULLET = 10;
+    int ROTATION = 15;
+public:
+    Object object;
+    list<Object> bullets;
+
+    PlayerShip(){
+    }
+
+    void Shoot()
+    {
+        if(bullets.size() >= MAXBULLET) return;
+
+        Object bullet;
+        bullet.x = object.x;
+        bullet.y = object.y;
+        bullet.angle = object.angle;
+        bullet.speed = 20;
+
+        bullets.push_front(bullet);
+    }
+
+    void MovePlayerShip()
+    {
+        object.MoveObject();
+    }
+
+    void Rotate(bool right)
+    {
+        if(right) object.angle += ROTATION;
+        else object.angle -= ROTATION;
+    }
+
+    float GetX()
+    {
+        return object.x;
+    }
+
+    float GetY()
+    {
+        return object.y;
+    }
+
+    float GetAngle()
+    {
+        return object.angle;
+    }
+};
+
 
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
@@ -107,10 +232,13 @@ void reshape( int w, int h )
     glOrtho(0,10,0,10,0,1);
 }
 
+PlayerShip p;
+
 // **********************************************************************
 //  void display( void )
 //
 // **********************************************************************
+
 void display( void )
 {
 
@@ -120,27 +248,39 @@ void display( void )
     // Define os limites lógicos da área OpenGL dentro da Janela
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glOrtho(0,10,0,10,0,1);
+    glOrtho(-width,width,-height,height,0,1);
 
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-	glLineWidth(3);
-	glColor3f(1,0,0);
+	for (std::list<Object>::iterator it = p.bullets.begin(); it != p.bullets.end(); ++it){
+        it->MoveObject();
+        it->DrawBullet();
+    }
 
-	glBegin(GL_LINES);
-	  glVertex2f(0,0);
-	  glVertex2f(5,5);
-	glEnd();
-
+    //DrawBullet();
 	glLineWidth(3);
 	glColor3f(0,1,0);
-	glBegin(GL_LINES);
-	  glVertex2f(5,5);
-	  glVertex2f(10,0);
+	glTranslatef(p.object.x,p.GetY(),0);
+    glRotatef(p.GetAngle(),0,0,1);
+	glBegin(GL_POLYGON);
+	  glVertex2f(-size,-size);
+	  glVertex2f(-size,size);
+	  glVertex2f(size,size);
+	  glVertex2f(size,-size);
+	  glVertex2f(-size,-size);
 	glEnd();
-
+	/*
+    glBegin(GL_LINES);
+    {
+        glVertex2f(-width,0);
+        glVertex2f(width,0);
+        glVertex2f(0,-height);
+        glVertex2f(0,height);
+    }
+    glEnd();
+    */
 	glutSwapBuffers();
 }
 
@@ -158,7 +298,19 @@ void keyboard ( unsigned char key, int x, int y )
 		case 27:        // Termina o programa qdo
 			exit ( 0 );   // a tecla ESC for pressionada
 			break;
-
+        case 'd':
+            p.Rotate(false);
+            break;
+        case 'a':
+            p.Rotate(true);
+            break;
+        case 'w':
+            p.MovePlayerShip();
+            break;
+        case ' ':
+            p.Shoot();
+            printf("Bullet in game : %i\n",p.bullets.size());
+            break;
 		default:
 			break;
 	}
@@ -194,6 +346,10 @@ void arrow_keys ( int a_keys, int x, int y )
 // **********************************************************************
 int  main ( int argc, char** argv )
 {
+    PlayerShip p;
+    p.Shoot();
+
+
     glutInit            ( &argc, argv );
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB );
     glutInitWindowPosition (0,0);
