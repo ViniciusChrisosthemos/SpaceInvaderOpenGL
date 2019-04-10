@@ -112,17 +112,28 @@
 
 1298986600 c:\users\10033421\desktop\basico2d\gl\freeglut_ext.h
 
+<<<<<<< HEAD
 1554938330 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
 	<iostream>
 	<cmath>
 	<ctime>
 	"Util.cpp"
+=======
+1554731919 source:/home/17204102/SpaceInvaderOpenGL/Basico2D/ProgramaBasicoOpenGL.cpp
+	<iostream>
+	<cmath>
+	<ctime>
+	<stdio.h>
+	<list>
+	<iterator>
+>>>>>>> c2a93cacb37daab050bdb9a093c92ac0a284cafc
 	<windows.h>
 	<glut.h>
 	<sys/time.h>
 	<GLUT/glut.h>
 	<glut.h>
 
+<<<<<<< HEAD
 1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\glut.h
 	"freeglut.h"
 
@@ -131,10 +142,21 @@
 	"freeglut_ext.h"
 
 1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\freeglut_std.h
+=======
+1554727762 /home/17204102/SpaceInvaderOpenGL/Basico2D/GL/glut.h
+	"freeglut.h"
+
+1554727762 /home/17204102/SpaceInvaderOpenGL/Basico2D/GL/freeglut.h
+	"freeglut_std.h"
+	"freeglut_ext.h"
+
+1554727762 /home/17204102/SpaceInvaderOpenGL/Basico2D/GL/freeglut_std.h
+>>>>>>> c2a93cacb37daab050bdb9a093c92ac0a284cafc
 	<windows.h>
 	<GL/gl.h>
 	<GL/glu.h>
 
+<<<<<<< HEAD
 1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\freeglut_ext.h
 
 1554937694 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
@@ -142,4 +164,13 @@
 
 1554938594 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
 	<cmath>
+=======
+1554727762 /home/17204102/SpaceInvaderOpenGL/Basico2D/GL/freeglut_ext.h
+
+1554728302 source:/home/17204102/SpaceInvaderOpenGL/Basico2D/src/Object.cpp
+	"Object.h"
+	<stdio.h>
+
+1554727832 /home/17204102/SpaceInvaderOpenGL/Basico2D/include/Object.h
+>>>>>>> c2a93cacb37daab050bdb9a093c92ac0a284cafc
 

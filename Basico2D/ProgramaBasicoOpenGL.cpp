@@ -19,6 +19,7 @@
 #include <ctime>
 #include "Util.cpp"
 
+
 using namespace std;
 
 #ifdef WIN32
@@ -55,6 +56,7 @@ void Draw()
     }
     glEnd();
 }
+
 
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
@@ -126,10 +128,13 @@ void reshape( int w, int h )
     glOrtho(0,10,0,10,0,1);
 }
 
+PlayerShip p;
+
 // **********************************************************************
 //  void display( void )
 //
 // **********************************************************************
+
 void display( void )
 {
 
@@ -140,6 +145,7 @@ void display( void )
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glOrtho(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN,0,1);
+
 
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
@@ -178,7 +184,6 @@ void keyboard ( unsigned char key, int x, int y )
         case 'd':
             player.rotate(false);
             break;
-
 		default:
 			break;
 	}
@@ -214,9 +219,6 @@ void arrow_keys ( int a_keys, int x, int y )
 // **********************************************************************
 int  main ( int argc, char** argv )
 {
-    PlayerShip p;
-    cout << p.x;
-
     glutInit            ( &argc, argv );
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB );
     glutInitWindowPosition (0,0);
