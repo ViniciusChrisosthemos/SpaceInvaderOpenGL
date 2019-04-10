@@ -112,3 +112,34 @@
 
 1298986600 c:\users\10033421\desktop\basico2d\gl\freeglut_ext.h
 
+1554938330 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
+	<iostream>
+	<cmath>
+	<ctime>
+	"Util.cpp"
+	<windows.h>
+	<glut.h>
+	<sys/time.h>
+	<GLUT/glut.h>
+	<glut.h>
+
+1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\glut.h
+	"freeglut.h"
+
+1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\freeglut.h
+	"freeglut_std.h"
+	"freeglut_ext.h"
+
+1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\freeglut_std.h
+	<windows.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\freeglut_ext.h
+
+1554937694 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
+	<cmath>
+
+1554938594 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
+	<cmath>
+

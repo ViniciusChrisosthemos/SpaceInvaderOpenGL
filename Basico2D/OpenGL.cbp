@@ -79,6 +79,7 @@
 			<Add option="-Wno-deprecated-declarations" />
 		</Compiler>
 		<Unit filename="ProgramaBasicoOpenGL.cpp" />
+		<Unit filename="Util.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

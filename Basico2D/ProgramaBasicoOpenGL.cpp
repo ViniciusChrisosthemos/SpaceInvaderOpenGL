@@ -17,6 +17,7 @@
 #include <iostream>
 #include <cmath>
 #include <ctime>
+#include "Util.cpp"
 
 using namespace std;
 
@@ -36,6 +37,24 @@ static struct timeval last_idle_time;
 #ifdef __linux__
 #include <glut.h>
 #endif
+
+int WIDTHSCREEN = 400;
+int HEIGHTSCREEN = 300;
+PlayerShip player;
+
+void Draw();
+
+void Draw()
+{
+    int size = 10;
+    glBegin(GL_TRIANGLES);
+    {
+        glVertex2d(-size,size);
+        glVertex2d(size,0);
+        glVertex2d(-size,-size);
+    }
+    glEnd();
+}
 
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
@@ -120,26 +139,15 @@ void display( void )
     // Define os limites lógicos da área OpenGL dentro da Janela
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glOrtho(0,10,0,10,0,1);
+    glOrtho(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN,0,1);
 
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-	glLineWidth(3);
-	glColor3f(1,0,0);
-
-	glBegin(GL_LINES);
-	  glVertex2f(0,0);
-	  glVertex2f(5,5);
-	glEnd();
-
-	glLineWidth(3);
-	glColor3f(0,1,0);
-	glBegin(GL_LINES);
-	  glVertex2f(5,5);
-	  glVertex2f(10,0);
-	glEnd();
+    glTranslated(player.x,player.y,0);
+    glRotatef(player.angle,0,0,1);
+    Draw();
 
 	glutSwapBuffers();
 }
@@ -158,6 +166,18 @@ void keyboard ( unsigned char key, int x, int y )
 		case 27:        // Termina o programa qdo
 			exit ( 0 );   // a tecla ESC for pressionada
 			break;
+
+        case 'w':
+            player.moveShip(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN);
+            break;
+
+        case 'a':
+            player.rotate(true);
+            break;
+
+        case 'd':
+            player.rotate(false);
+            break;
 
 		default:
 			break;
@@ -194,6 +214,9 @@ void arrow_keys ( int a_keys, int x, int y )
 // **********************************************************************
 int  main ( int argc, char** argv )
 {
+    PlayerShip p;
+    cout << p.x;
+
     glutInit            ( &argc, argv );
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB );
     glutInitWindowPosition (0,0);
