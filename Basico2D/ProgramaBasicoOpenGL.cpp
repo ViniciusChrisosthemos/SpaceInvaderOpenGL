@@ -18,6 +18,7 @@
 #include <cmath>
 #include <ctime>
 #include "Util.cpp"
+#include <stdio.h>
 
 
 using namespace std;
@@ -47,7 +48,7 @@ void Draw();
 
 void Draw()
 {
-    int size = 10;
+    int size = 5;
     glBegin(GL_TRIANGLES);
     {
         glVertex2d(-size,size);
@@ -134,7 +135,18 @@ PlayerShip p;
 //  void display( void )
 //
 // **********************************************************************
-
+void DrawBullet()
+{
+    int size = 2;
+    glBegin(GL_QUADS);
+    {
+        glVertex2d(-size,-size);
+        glVertex2d(size,-size);
+        glVertex2d(size,size);
+        glVertex2d(-size,size);
+    }
+    glEnd();
+}
 void display( void )
 {
 
@@ -150,10 +162,22 @@ void display( void )
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    glPushMatrix();
+        glTranslated(player.coordinate.x,player.coordinate.y,0);
+        glRotatef(player.angle,0,0,1);
+        Draw();
+    glPopMatrix();
+    player.moveBullets();
 
-    glTranslated(player.x,player.y,0);
-    glRotatef(player.angle,0,0,1);
-    Draw();
+    for(int i=0; i<player.currentBullets; i++)
+    {
+        glPushMatrix();
+            glRotatef(player.bullets[i].angle,0,0,1);
+            glTranslatef(player.bullets[i].coordinate.x,player.bullets[i].coordinate.y,0);
+            DrawBullet();
+        glPopMatrix();
+    }
+
 
 	glutSwapBuffers();
 }
@@ -184,6 +208,11 @@ void keyboard ( unsigned char key, int x, int y )
         case 'd':
             player.rotate(false);
             break;
+
+        case ' ':
+            if(player.canShoot()) player.Shoot(WIDTHSCREEN);
+            break;
+
 		default:
 			break;
 	}

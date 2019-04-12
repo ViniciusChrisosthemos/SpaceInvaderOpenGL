@@ -26,7 +26,7 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
-1298986600 
+1554938330 
 
 1298986600 c:\marcio\imageclass\gl\freeglut_ext.h
 
@@ -112,13 +112,20 @@
 
 1298986600 c:\users\10033421\desktop\basico2d\gl\freeglut_ext.h
 
-<<<<<<< HEAD
-1554938330 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
+1554727762 D
+
+1555033459 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
 	<iostream>
 	<cmath>
 	<ctime>
 	"Util.cpp"
-=======
+	<stdio.h>
+	<windows.h>
+	<glut.h>
+	<sys/time.h>
+	<GLUT/glut.h>
+	<glut.h>
+
 1554731919 source:/home/17204102/SpaceInvaderOpenGL/Basico2D/ProgramaBasicoOpenGL.cpp
 	<iostream>
 	<cmath>
@@ -126,14 +133,17 @@
 	<stdio.h>
 	<list>
 	<iterator>
->>>>>>> c2a93cacb37daab050bdb9a093c92ac0a284cafc
+
+1554727832 93cacb37daab050bdb9a093c92ac0a284cafc
 	<windows.h>
 	<glut.h>
 	<sys/time.h>
 	<GLUT/glut.h>
 	<glut.h>
+	<windows.h>
+	<GL/gl.h>
+	<GL/glu.h>
 
-<<<<<<< HEAD
 1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\glut.h
 	"freeglut.h"
 
@@ -142,7 +152,7 @@
 	"freeglut_ext.h"
 
 1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\freeglut_std.h
-=======
+
 1554727762 /home/17204102/SpaceInvaderOpenGL/Basico2D/GL/glut.h
 	"freeglut.h"
 
@@ -151,20 +161,17 @@
 	"freeglut_ext.h"
 
 1554727762 /home/17204102/SpaceInvaderOpenGL/Basico2D/GL/freeglut_std.h
->>>>>>> c2a93cacb37daab050bdb9a093c92ac0a284cafc
-	<windows.h>
-	<GL/gl.h>
-	<GL/glu.h>
 
-<<<<<<< HEAD
 1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\freeglut_ext.h
 
-1554937694 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
+1555033675 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
 	<cmath>
+	<cstddef>
 
-1554938594 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
+1555033675 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
 	<cmath>
-=======
+	<cstddef>
+
 1554727762 /home/17204102/SpaceInvaderOpenGL/Basico2D/GL/freeglut_ext.h
 
 1554728302 source:/home/17204102/SpaceInvaderOpenGL/Basico2D/src/Object.cpp
@@ -172,5 +179,4 @@
 	<stdio.h>
 
 1554727832 /home/17204102/SpaceInvaderOpenGL/Basico2D/include/Object.h
->>>>>>> c2a93cacb37daab050bdb9a093c92ac0a284cafc
 
