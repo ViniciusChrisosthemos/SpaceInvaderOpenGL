@@ -114,12 +114,14 @@
 
 1554727762 D
 
-1555033459 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
+1555122390 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
 	<iostream>
 	<cmath>
 	<ctime>
 	"Util.cpp"
 	<stdio.h>
+	<time.h>
+	<stdlib.h>
 	<windows.h>
 	<glut.h>
 	<sys/time.h>
@@ -164,13 +166,19 @@
 
 1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\freeglut_ext.h
 
-1555033675 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
+1555122330 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
 	<cmath>
 	<cstddef>
+	<stdio.h>
+	<time.h>
+	<stdlib.h>
 
-1555033675 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
+1555122862 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
 	<cmath>
 	<cstddef>
+	<stdio.h>
+	<time.h>
+	<stdlib.h>
 
 1554727762 /home/17204102/SpaceInvaderOpenGL/Basico2D/GL/freeglut_ext.h
 

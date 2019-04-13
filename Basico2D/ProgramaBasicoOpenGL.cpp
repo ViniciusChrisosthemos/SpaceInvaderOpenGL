@@ -19,6 +19,8 @@
 #include <ctime>
 #include "Util.cpp"
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 
 
 using namespace std;
@@ -40,8 +42,8 @@ static struct timeval last_idle_time;
 #include <glut.h>
 #endif
 
-int WIDTHSCREEN = 400;
-int HEIGHTSCREEN = 300;
+int WIDTHSCREEN = 800;
+int HEIGHTSCREEN = 600;
 PlayerShip player;
 
 void Draw();
@@ -147,6 +149,9 @@ void DrawBullet()
     }
     glEnd();
 }
+
+EnemyShip es;
+
 void display( void )
 {
 
@@ -156,14 +161,14 @@ void display( void )
     // Define os limites lógicos da área OpenGL dentro da Janela
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glOrtho(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN,0,1);
-
+    //glOrtho(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN,0,1);
+    glOrtho(0,WIDTHSCREEN,0,HEIGHTSCREEN,0,1);
 
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     glPushMatrix();
-        glTranslated(player.coordinate.x,player.coordinate.y,0);
+        glTranslated(player.coordinate->x,player.coordinate->y,0);
         glRotatef(player.angle,0,0,1);
         Draw();
     glPopMatrix();
@@ -172,12 +177,21 @@ void display( void )
     for(int i=0; i<player.currentBullets; i++)
     {
         glPushMatrix();
+            glTranslatef(player.bullets[i].coordinate->x,player.bullets[i].coordinate->y,0);
             glRotatef(player.bullets[i].angle,0,0,1);
-            glTranslatef(player.bullets[i].coordinate.x,player.bullets[i].coordinate.y,0);
             DrawBullet();
         glPopMatrix();
     }
 
+    glPushMatrix();
+        glTranslated(es.coordinate->x,es.coordinate->y,0);
+        Draw();
+    glPopMatrix();
+
+
+    es.moveEShip();
+
+    player.moveBullets();
 
 	glutSwapBuffers();
 }
@@ -198,7 +212,7 @@ void keyboard ( unsigned char key, int x, int y )
 			break;
 
         case 'w':
-            player.moveShip(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN);
+            player.moveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
             break;
 
         case 'a':
@@ -210,7 +224,8 @@ void keyboard ( unsigned char key, int x, int y )
             break;
 
         case ' ':
-            if(player.canShoot()) player.Shoot(WIDTHSCREEN);
+            if(player.canShoot()) player.Shoot(WIDTHSCREEN,HEIGHTSCREEN);
+            //printf("Bx=%f,By=%f\n",player.bullets[0].coordinate->x,player.bullets[0].coordinate->y);
             break;
 
 		default:
