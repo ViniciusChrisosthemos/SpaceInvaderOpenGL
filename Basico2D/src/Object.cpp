@@ -1,12 +1,11 @@
 #include "Object.h"
-#include <stdio.h>
 
-class Object{
-public:
-    int a;
-    void print();
-};
+Object::Object()
+{
+    //ctor
+}
 
-void Object::print(){
-    printf("%i\n",a);
+Object::~Object()
+{
+    //dtor
 }

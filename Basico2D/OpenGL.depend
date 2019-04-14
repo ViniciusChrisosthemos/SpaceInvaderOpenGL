@@ -114,7 +114,7 @@
 
 1554727762 D
 
-1555122390 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
+1555248593 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
 	<iostream>
 	<cmath>
 	<ctime>
@@ -166,14 +166,14 @@
 
 1298986600 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\gl\freeglut_ext.h
 
-1555122330 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
+1555270017 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
 	<cmath>
 	<cstddef>
 	<stdio.h>
 	<time.h>
 	<stdlib.h>
 
-1555122862 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
+1555270017 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\util.cpp
 	<cmath>
 	<cstddef>
 	<stdio.h>
@@ -187,4 +187,20 @@
 	<stdio.h>
 
 1554727832 /home/17204102/SpaceInvaderOpenGL/Basico2D/include/Object.h
+
+1555270066 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\gamemanager.cpp
+	"GameManager.h"
+
+1555270010 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\gamemanager.h
+
+1555270084 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\object.cpp
+	"Object.h"
+
+1555270120 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\object.h
+
+1555270073 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\playership.cpp
+	"PlayerShip.h"
+
+1555270156 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\playership.h
+	"Object.h"
 

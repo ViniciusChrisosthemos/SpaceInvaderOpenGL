@@ -150,7 +150,11 @@ void DrawBullet()
     glEnd();
 }
 
-EnemyShip es;
+EnemyShip es0(p.coordinate);
+EnemyShip es1(p.coordinate);
+EnemyShip es2(p.coordinate);
+EnemyShip es3(p.coordinate);
+EnemyShip es4(p.coordinate);
 
 void display( void )
 {
@@ -183,13 +187,26 @@ void display( void )
         glPopMatrix();
     }
 
+    es0.moveEShip();
     glPushMatrix();
-        glTranslated(es.coordinate->x,es.coordinate->y,0);
+        glTranslated(es0.coordinate->x,es0.coordinate->y,0);
         Draw();
     glPopMatrix();
-
-
-    es.moveEShip();
+    es1.moveEShip();
+    glPushMatrix();
+        glTranslated(es1.coordinate->x,es1.coordinate->y,0);
+        Draw();
+    glPopMatrix();
+    es2.moveEShip();
+    glPushMatrix();
+        glTranslated(es2.coordinate->x,es2.coordinate->y,0);
+        Draw();
+    glPopMatrix();
+    es3.moveEShip();
+    glPushMatrix();
+        glTranslated(es3.coordinate->x,es3.coordinate->y,0);
+        Draw();
+    glPopMatrix();
 
     player.moveBullets();
 
