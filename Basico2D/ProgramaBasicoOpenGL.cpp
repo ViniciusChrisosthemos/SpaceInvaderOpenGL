@@ -17,11 +17,10 @@
 #include <iostream>
 #include <cmath>
 #include <ctime>
-#include "Util.cpp"
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-
+#include <GameManager.h>
 
 using namespace std;
 
@@ -42,9 +41,7 @@ static struct timeval last_idle_time;
 #include <glut.h>
 #endif
 
-int WIDTHSCREEN = 800;
-int HEIGHTSCREEN = 600;
-PlayerShip player;
+GameManager gameManager;
 
 void Draw();
 
@@ -130,9 +127,6 @@ void reshape( int w, int h )
     glLoadIdentity();
     glOrtho(0,10,0,10,0,1);
 }
-
-PlayerShip p;
-
 // **********************************************************************
 //  void display( void )
 //
@@ -149,13 +143,6 @@ void DrawBullet()
     }
     glEnd();
 }
-
-EnemyShip es0(p.coordinate);
-EnemyShip es1(p.coordinate);
-EnemyShip es2(p.coordinate);
-EnemyShip es3(p.coordinate);
-EnemyShip es4(p.coordinate);
-
 void display( void )
 {
 
@@ -166,17 +153,11 @@ void display( void )
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     //glOrtho(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN,0,1);
-    glOrtho(0,WIDTHSCREEN,0,HEIGHTSCREEN,0,1);
-
+    glOrtho(0,gameManager.WIDTHSCREEN,0,gameManager.HEIGHTSCREEN,0,1);
+/*
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    glPushMatrix();
-        glTranslated(player.coordinate->x,player.coordinate->y,0);
-        glRotatef(player.angle,0,0,1);
-        Draw();
-    glPopMatrix();
-    player.moveBullets();
 
     for(int i=0; i<player.currentBullets; i++)
     {
@@ -209,7 +190,16 @@ void display( void )
     glPopMatrix();
 
     player.moveBullets();
+*/
 
+    glPushMatrix();
+        glTranslated(gameManager.playerShip.coordinate->x,gameManager.playerShip.coordinate->y,0);
+        glRotatef(gameManager.playerShip.angle,0,0,1);
+        Draw();
+    glPopMatrix();
+    printf("Antes MoveBullets\n");
+    gameManager.playerShip.MoveBullets();
+    printf("Depois MoveBullets\n");
 	glutSwapBuffers();
 }
 
@@ -229,19 +219,19 @@ void keyboard ( unsigned char key, int x, int y )
 			break;
 
         case 'w':
-            player.moveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
+            gameManager.playerShip.MoveShip(0,gameManager.WIDTHSCREEN,0,gameManager.HEIGHTSCREEN);
             break;
 
         case 'a':
-            player.rotate(true);
+            gameManager.playerShip.Rotate(true);
             break;
 
         case 'd':
-            player.rotate(false);
+            gameManager.playerShip.Rotate(false);
             break;
 
         case ' ':
-            if(player.canShoot()) player.Shoot(WIDTHSCREEN,HEIGHTSCREEN);
+            if(gameManager.playerShip.CanShoot()) gameManager.playerShip.Shoot(gameManager.WIDTHSCREEN,gameManager.HEIGHTSCREEN);
             //printf("Bx=%f,By=%f\n",player.bullets[0].coordinate->x,player.bullets[0].coordinate->y);
             break;
 

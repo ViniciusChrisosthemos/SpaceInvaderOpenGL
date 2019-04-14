@@ -1,11 +1,13 @@
 #include "Object.h"
 
-Object::Object()
+Object::Object(Point _coordinate, float _angle, float _speed)
 {
-    //ctor
+    coordinate = &_coordinate;
+    angle = _angle;
+    speed = _speed;
 }
 
 Object::~Object()
 {
-    //dtor
+    delete coordinate;
 }

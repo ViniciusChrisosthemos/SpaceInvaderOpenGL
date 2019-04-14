@@ -1,11 +1,25 @@
-#include "GameManager.h"
+#include <GameManager.h>
+
 
 GameManager::GameManager()
 {
-    //ctor
+    WIDTHSCREEN = 800;
+    HEIGHTSCREEN = 600;
+
+    //state = State.MENU;
 }
 
 GameManager::~GameManager()
 {
     //dtor
+}
+
+void GameManager::Process()
+{
+
+}
+
+void GameManager::Draw()
+{
+
 }
