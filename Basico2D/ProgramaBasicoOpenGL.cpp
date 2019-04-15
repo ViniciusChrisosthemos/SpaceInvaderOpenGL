@@ -41,7 +41,7 @@ static struct timeval last_idle_time;
 #include <glut.h>
 #endif
 
-GameManager gameManager;
+GameManager *gameManager = new GameManager();
 
 void Draw();
 
@@ -153,7 +153,8 @@ void display( void )
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     //glOrtho(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN,0,1);
-    glOrtho(0,gameManager.WIDTHSCREEN,0,gameManager.HEIGHTSCREEN,0,1);
+    glOrtho(0,gameManager->WIDTHSCREEN,0,gameManager->HEIGHTSCREEN,0,1);
+    printf("W=%d,H=%d\n",gameManager->WIDTHSCREEN,gameManager->HEIGHTSCREEN);
 /*
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
@@ -193,12 +194,12 @@ void display( void )
 */
 
     glPushMatrix();
-        glTranslated(gameManager.playerShip.coordinate->x,gameManager.playerShip.coordinate->y,0);
-        glRotatef(gameManager.playerShip.angle,0,0,1);
+        glTranslated(gameManager->playerShip.coordinate->x,gameManager->playerShip.coordinate->y,0);
+        glRotatef(gameManager->playerShip.angle,0,0,1);
         Draw();
     glPopMatrix();
     printf("Antes MoveBullets\n");
-    gameManager.playerShip.MoveBullets();
+    gameManager->playerShip.MoveBullets();
     printf("Depois MoveBullets\n");
 	glutSwapBuffers();
 }
@@ -219,19 +220,19 @@ void keyboard ( unsigned char key, int x, int y )
 			break;
 
         case 'w':
-            gameManager.playerShip.MoveShip(0,gameManager.WIDTHSCREEN,0,gameManager.HEIGHTSCREEN);
+            gameManager->playerShip.MoveShip(0,gameManager->WIDTHSCREEN,0,gameManager->HEIGHTSCREEN);
             break;
 
         case 'a':
-            gameManager.playerShip.Rotate(true);
+            gameManager->playerShip.Rotate(true);
             break;
 
         case 'd':
-            gameManager.playerShip.Rotate(false);
+            gameManager->playerShip.Rotate(false);
             break;
 
         case ' ':
-            if(gameManager.playerShip.CanShoot()) gameManager.playerShip.Shoot(gameManager.WIDTHSCREEN,gameManager.HEIGHTSCREEN);
+            if(gameManager->playerShip.CanShoot()) gameManager->playerShip.Shoot(gameManager->WIDTHSCREEN,gameManager->HEIGHTSCREEN);
             //printf("Bx=%f,By=%f\n",player.bullets[0].coordinate->x,player.bullets[0].coordinate->y);
             break;
 

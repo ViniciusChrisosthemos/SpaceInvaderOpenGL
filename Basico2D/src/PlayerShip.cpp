@@ -4,12 +4,11 @@
 #include <Bullet.h>
 #include <Object.h>
 #include <stdio.h>
-
+#include <vector>
 
 PlayerShip::PlayerShip() :
     Object(Point(0,0), 0, 0)
 {
-    bullets[10];
     coordinate = new Point(0,0);
     angle = 0.1;
     speed = 5;
@@ -47,32 +46,13 @@ bool PlayerShip::CanShoot()
 
 void PlayerShip::Shoot(int widthScreen, int heightScreen)
 {
-    Bullet bullet(coordinate->x,coordinate->y, angle, widthScreen, heightScreen);
-    bullet.speed = speed;
+    Bullet* bullet = new Bullet(coordinate->x,coordinate->y,angle,0,0);
 
-    printf("Bx=%f,By=%f,Bangle=%f\n",bullet.coordinate->x,bullet.coordinate->y,bullet.angle);
-    printf("Sx=%f,Sy=%f,Sangle=%f\n",coordinate->x,coordinate->y,angle);
-
-    bullets[currentBullets++] = bullet;
-    printf("FIM SHOOT, Bullet(%f,%f,%f)\n",bullets[0].coordinate->x,bullets[0].coordinate->y,bullets[0].speed);
+    bullets.AddBullet(bullet);
+    printf("Bx = %f,By = %f\n", bullets.GetBullet(bullets.sizeList-1)->coordinate->x,bullets.GetBullet(bullets.sizeList-1)->coordinate->y);
 }
 
 void PlayerShip::MoveBullets()
 {
-    printf("COMECO MOVEBULLETS \n");
-    Bullet *bullet;
-    for(int i=0; i<currentBullets; i++)
-    {
-        bullet = &bullets[i];
-        printf("step1\n");
-        bullet->MoveBullet();
-        if(!bullet->inGame)
-        {
-            for(int j=i; j<currentBullets-1;j++)
-            {
-                bullets[j] = bullets[j+1];
-            }
-            currentBullets -= 1;
-        }
-    }
+
 }

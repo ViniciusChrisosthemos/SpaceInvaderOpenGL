@@ -2,12 +2,15 @@
 #define PLAYERSHIP_H
 #include <Object.h>
 #include <Bullet.h>
+#include <vector>
+#include <BulletList.h>
 
 class PlayerShip : public Object
 {
     public:
         int forceRotate;
-        Bullet bullets[];
+        //std::vector<Bullet*> bullets;
+        BulletList bullets;
         int currentBullets;
 
         PlayerShip();
