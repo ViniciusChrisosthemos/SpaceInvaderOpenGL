@@ -5,6 +5,7 @@
 Bullet::Bullet(float _x, float _y, float _angle, float _limitX, float _limitY):
     Object(Point(_x,_y), _angle, 10)
 {
+    coordinate = new Point(_x, _y);
     limitX = _limitX;
     limitY = _limitY;
     inGame = true;

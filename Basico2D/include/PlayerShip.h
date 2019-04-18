@@ -9,15 +9,14 @@ class PlayerShip : public Object
 {
     public:
         int forceRotate;
-        //std::vector<Bullet*> bullets;
-        BulletList bullets;
+        std::vector<Bullet*> bullets;
+        //BulletList bullets;
         int currentBullets;
 
         PlayerShip();
         virtual ~PlayerShip();
         void MoveShip(int minX,int maxX,int minY,int maxY);
         void Rotate(bool toLeft);
-        bool CanShoot();
         void Shoot(int widthScreen, int heightScreen);
         void MoveBullets();
 

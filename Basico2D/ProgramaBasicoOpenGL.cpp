@@ -154,53 +154,13 @@ void display( void )
     glLoadIdentity();
     //glOrtho(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN,0,1);
     glOrtho(0,gameManager->WIDTHSCREEN,0,gameManager->HEIGHTSCREEN,0,1);
-    printf("W=%d,H=%d\n",gameManager->WIDTHSCREEN,gameManager->HEIGHTSCREEN);
 /*
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-    for(int i=0; i<player.currentBullets; i++)
-    {
-        glPushMatrix();
-            glTranslatef(player.bullets[i].coordinate->x,player.bullets[i].coordinate->y,0);
-            glRotatef(player.bullets[i].angle,0,0,1);
-            DrawBullet();
-        glPopMatrix();
-    }
 
-    es0.moveEShip();
-    glPushMatrix();
-        glTranslated(es0.coordinate->x,es0.coordinate->y,0);
-        Draw();
-    glPopMatrix();
-    es1.moveEShip();
-    glPushMatrix();
-        glTranslated(es1.coordinate->x,es1.coordinate->y,0);
-        Draw();
-    glPopMatrix();
-    es2.moveEShip();
-    glPushMatrix();
-        glTranslated(es2.coordinate->x,es2.coordinate->y,0);
-        Draw();
-    glPopMatrix();
-    es3.moveEShip();
-    glPushMatrix();
-        glTranslated(es3.coordinate->x,es3.coordinate->y,0);
-        Draw();
-    glPopMatrix();
 
-    player.moveBullets();
-*/
-
-    glPushMatrix();
-        glTranslated(gameManager->playerShip.coordinate->x,gameManager->playerShip.coordinate->y,0);
-        glRotatef(gameManager->playerShip.angle,0,0,1);
-        Draw();
-    glPopMatrix();
-    printf("Antes MoveBullets\n");
-    gameManager->playerShip.MoveBullets();
-    printf("Depois MoveBullets\n");
 	glutSwapBuffers();
 }
 
@@ -232,7 +192,7 @@ void keyboard ( unsigned char key, int x, int y )
             break;
 
         case ' ':
-            if(gameManager->playerShip.CanShoot()) gameManager->playerShip.Shoot(gameManager->WIDTHSCREEN,gameManager->HEIGHTSCREEN);
+            gameManager->playerShip.Shoot(gameManager->WIDTHSCREEN,gameManager->HEIGHTSCREEN);
             //printf("Bx=%f,By=%f\n",player.bullets[0].coordinate->x,player.bullets[0].coordinate->y);
             break;
 

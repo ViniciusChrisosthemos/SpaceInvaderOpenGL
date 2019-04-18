@@ -39,20 +39,29 @@ void PlayerShip::Rotate(bool toLeft)
     angle += (toLeft) ? forceRotate:-forceRotate;
 }
 
-bool PlayerShip::CanShoot()
-{
-    return currentBullets < 10;
-}
-
 void PlayerShip::Shoot(int widthScreen, int heightScreen)
 {
-    Bullet* bullet = new Bullet(coordinate->x,coordinate->y,angle,0,0);
+    if(currentBullets < 10)
+    {
+        Bullet* bullet = new Bullet(coordinate->x,coordinate->y,angle,0,0);
 
-    bullets.AddBullet(bullet);
-    printf("Bx = %f,By = %f\n", bullets.GetBullet(bullets.sizeList-1)->coordinate->x,bullets.GetBullet(bullets.sizeList-1)->coordinate->y);
+        bullets.push_back(bullet);
+        currentBullets++;
+    }
 }
 
 void PlayerShip::MoveBullets()
 {
-
+    int i;
+    Bullet* bullet;
+    for(i=0; i<currentBullets; i++)
+    {
+        bullet = bullets.at(i);
+        bullet->MoveBullet();
+        if(!bullet->inGame)
+        {
+            bullets.erase(bullets.begin()+i);
+            currentBullets--;
+        }
+    }
 }
