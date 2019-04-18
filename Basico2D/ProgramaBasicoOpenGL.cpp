@@ -21,6 +21,10 @@
 #include <time.h>
 #include <stdlib.h>
 #include <GameManager.h>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -143,6 +147,65 @@ void DrawBullet()
     }
     glEnd();
 }
+
+void LoadColorsMatriz()
+{
+    ifstream file;
+    int currentInt,i,temp;
+
+    file.open("colors.txt");
+
+    if(!file)
+    {
+        printf("Erro ao ler o arquivo!");
+        return;
+    }
+
+    file >> temp;
+    int colorMatriz[3][temp];
+
+    while(file >> currentInt)
+    {
+        for(i=0; i<3; i++)
+        {
+            file >> temp;
+            colorMatriz[i][currentInt-1] = temp;
+        }
+    }
+
+    file.close();
+}
+
+//https://www.quora.com/How-do-I-open-files-using-an-array-in-C
+void LoadModelsObjects()
+{
+    ifstream file;
+    int enemyshipModels;
+    char fileName[1024];
+
+    cout << "Informe o número de modelos de naves: ";
+    cin >> enemyshipModels;
+
+    while(enemyshipModels)
+    {
+        sprintf(fileName,"EShip%d.txt",enemyshipModels);
+        file.open(fileName);
+
+        if(!file)
+        {
+            fprintf(stderr,"%s nao encontrado!\n", fileName);
+            return;
+        }
+
+        printf("Open %s\n",fileName);
+
+
+
+        enemyshipModels--;
+        file.close();
+    }
+}
+
 void display( void )
 {
 
@@ -154,7 +217,7 @@ void display( void )
     glLoadIdentity();
     //glOrtho(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN,0,1);
     glOrtho(0,gameManager->WIDTHSCREEN,0,gameManager->HEIGHTSCREEN,0,1);
-/*
+
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -180,11 +243,13 @@ void keyboard ( unsigned char key, int x, int y )
 			break;
 
         case 'w':
-            gameManager->playerShip.MoveShip(0,gameManager->WIDTHSCREEN,0,gameManager->HEIGHTSCREEN);
+            //gameManager->playerShip.MoveShip(0,gameManager->WIDTHSCREEN,0,gameManager->HEIGHTSCREEN);
+            LoadColorsMatriz();
             break;
 
         case 'a':
-            gameManager->playerShip.Rotate(true);
+            //gameManager->playerShip.Rotate(true);
+            LoadModelsObjects();
             break;
 
         case 'd':
