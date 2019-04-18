@@ -114,19 +114,22 @@
 
 1554727762 D
 
-1555606855 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
+1555624876 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
 	<iostream>
 	<cmath>
 	<ctime>
 	<stdio.h>
 	<time.h>
 	<stdlib.h>
-	<GameManager.h>
 	<fstream>
 	<string>
 	<sstream>
 	<stdlib.h>
+	<vector>
+	<EnemyShip.h>
+	<PlayerShip.h>
 	<ObjectModel.h>
+	<Point.h>
 	<windows.h>
 	<glut.h>
 	<sys/time.h>
@@ -200,13 +203,14 @@
 	<PlayerShip.h>
 	<EnemyShip.h>
 
-1555277177 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\object.cpp
+1555624222 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\object.cpp
 	"Object.h"
 
-1555277177 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\object.h
-	"Point.h"
+1555624230 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\object.h
+	<Point.h>
+	<ObjectModel.h>
 
-1555552090 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\playership.cpp
+1555625016 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\playership.cpp
 	<PlayerShip.h>
 	<Point.h>
 	<math.h>
@@ -214,34 +218,39 @@
 	<Object.h>
 	<stdio.h>
 	<vector>
+	<ObjectModel.h>
 
-1555551664 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\playership.h
+1555625022 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\playership.h
 	<Object.h>
 	<Bullet.h>
 	<vector>
 	<BulletList.h>
+	<ObjectModel.h>
 
 1555277177 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\point.h
 
-1555551743 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\bullet.cpp
+1555624236 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\bullet.cpp
 	"Bullet.h"
 	"Point.h"
 	"math.h"
 
-1555277177 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\bullet.h
+1555622196 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\bullet.h
 	"Object.h"
+	<ObjectModel.h>
 
-1555277177 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\enemyship.cpp
+1555624241 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\enemyship.cpp
 	"EnemyShip.h"
 	<stdlib.h>
 	<time.h>
 	<Point.h>
 	<math.h>
 	<stdio.h>
+	<ObjectModel.h>
 
-1555277177 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\enemyship.h
+1555622090 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\enemyship.h
 	"Point.h"
 	"Object.h"
+	<ObjectModel.h>
 
 1555277177 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\point.cpp
 	"Point.h"
@@ -355,9 +364,11 @@
 
 1555557163 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\modelobject.h
 
-1555600948 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\objectmodel.cpp
+1555621312 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\objectmodel.cpp
 	"ObjectModel.h"
 	<stdio.h>
+	<vector>
 
-1555604709 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\objectmodel.h
+1555620810 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\objectmodel.h
+	<vector>
 

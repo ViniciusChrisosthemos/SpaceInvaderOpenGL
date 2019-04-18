@@ -4,19 +4,12 @@
 #include <Point.h>
 #include <math.h>
 #include <stdio.h>
+#include <ObjectModel.h>
 
-EnemyShip::EnemyShip(Point *_target) :
-    Object(Point(0,0), 0, 0)
+EnemyShip::EnemyShip(Point *_target, ObjectModel* _model) :
+    Object(new Point(0,0), 0, 0, _model)
 {
         srand(time(NULL));
-        /*
-        coordinate = new Point(rand()%800,rand()%600);
-        printf("Initial pos : (%f,%f)",coordinate->x,coordinate->y);
-        p1 = new Point(coordinate->x,coordinate->y);
-        p2 = new Point(p1->x + (rand()%100 - 200),p1->y + (rand()%100 - 200));
-        p3 = new Point(p1->x + (rand()%100 - 200),(rand()%100 - 200));
-        printf("P1(%f,%f),P2(%f,%f),P3(%f,%f)\n",p1->x,p1->y,p2->x,p2->y,p3->x,p3->y);
-        */
 
         this->target = _target;
         this->coordinate = new Point(0,600);

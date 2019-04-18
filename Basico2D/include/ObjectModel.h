@@ -1,21 +1,19 @@
 #ifndef OBJECTMODEL_H
 #define OBJECTMODEL_H
-
+#include <vector>
 
 class ObjectModel
 {
     public:
         int x;
         int y;
-        int* model[];
+        std::vector< std::vector<int> > model;
 
-        ObjectModel();
+        ObjectModel(int _x, int _y);
         virtual ~ObjectModel();
-        void printModel();
 
     protected:
 
-    private:
 };
 
 #endif // OBJECTMODEL_H

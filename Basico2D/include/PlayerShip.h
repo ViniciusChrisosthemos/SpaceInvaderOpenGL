@@ -4,19 +4,19 @@
 #include <Bullet.h>
 #include <vector>
 #include <BulletList.h>
+#include <ObjectModel.h>
 
 class PlayerShip : public Object
 {
     public:
         int forceRotate;
         std::vector<Bullet*> bullets;
-        //BulletList bullets;
         int currentBullets;
 
-        PlayerShip();
+        PlayerShip(Point* _initialPosition, ObjectModel* _model);
         virtual ~PlayerShip();
         void MoveShip(int minX,int maxX,int minY,int maxY);
-        void Rotate(bool toLeft);
+        void Rotate(bool toRight);
         void Shoot(int widthScreen, int heightScreen);
         void MoveBullets();
 

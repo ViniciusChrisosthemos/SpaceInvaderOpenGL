@@ -24,7 +24,11 @@
 #include <string>
 #include <sstream>
 #include <stdlib.h>
+#include <vector>
+#include <EnemyShip.h>
+#include <PlayerShip.h>
 #include <ObjectModel.h>
+#include <Point.h>
 
 using namespace std;
 
@@ -51,9 +55,12 @@ static struct timeval last_idle_time;
 int WIDTHSCREEN;
 int HEIGHTSCREEN;
 int ENEMYAMOUNT;
+int ENEMYMODELS = 5;
 vector<ObjectModel*> modelsList;
 vector<EnemyShip*> enemysList;
+ObjectModel* playerModel;
 PlayerShip* player;
+
 
 // Métodos OpenGL
 void animate();
@@ -64,7 +71,7 @@ void keyboard ( unsigned char key, int x, int y );
 void arrow_keys ( int a_keys, int x, int y );
 
 // Métodos do Jogo
-void DrawObject(int* _model[], int _x, int _y, float angle);
+void DrawObject(Point* pos, ObjectModel* _model, float _angle);
 void DrawSquare(int _ix, int _iy, int _fx, int _fy);
 void LoadColorsMatriz();
 void LoadModelsObjects();
@@ -152,13 +159,12 @@ void display( void )
 	glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     //glOrtho(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN,0,1);
-    glOrtho(0,gameManager->WIDTHSCREEN,0,gameManager->HEIGHTSCREEN,0,1);
-    glTranslated(400,300,0);
+    glOrtho(0,WIDTHSCREEN,0,HEIGHTSCREEN,0,1);
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-
+    Draw();
 
 	glutSwapBuffers();
 }
@@ -176,15 +182,19 @@ void keyboard ( unsigned char key, int x, int y )
 			break;
 
         case 'w':
+            player->MoveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
             break;
 
         case 'a':
+            player->Rotate(false);
             break;
 
         case 'd':
+            player->Rotate(true);
             break;
 
         case ' ':
+            player->Shoot(WIDTHSCREEN,HEIGHTSCREEN);
             break;
 
 		default:
@@ -212,6 +222,11 @@ void arrow_keys ( int a_keys, int x, int y )
 	}
 }
 
+void Draw()
+{
+    DrawObject(player->coordinate, player->model,player->angle);
+}
+
 void InitializeVariables()
 {
     //Inicia variaveis do ambiente
@@ -220,7 +235,7 @@ void InitializeVariables()
     ENEMYAMOUNT = 6;
 
     //Inicia a nave do jogador
-    player = new PlayerShip();
+    player = new PlayerShip(new Point(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel);
     /*
     //Inicia as naves inimigas
     for(int i=0; i<ENEMYAMOUNT; i++)
@@ -262,13 +277,10 @@ void LoadColorsMatriz()
 void LoadModelsObjects()
 {
     ifstream file;
-    int enemyshipModels;
     char fileName[1024];
-
-    cout << "Informe o número de modelos de naves: ";
-    cin >> enemyshipModels;
-    int x,y;
+    int x,y,line,column;
     ObjectModel* modelObj;
+    int enemyshipModels = ENEMYMODELS;
 
     while(enemyshipModels)
     {
@@ -280,38 +292,63 @@ void LoadModelsObjects()
             fprintf(stderr,"%s nao encontrado!\n", fileName);
             return;
         }
-        printf("Open %s\n",fileName);
-        printf("Processing ............%s\n",fileName);
 
-        file >> x;
         file >> y;
+        file >> x;
 
-        modelObj = new ObjectModel();
-        modelObj->model[x];
-        modelObj->x = x;
-        modelObj->y = y;
-        printf("X=%d  Y=%d\n",modelObj->x,modelObj->y);
-        printf("Matriz[%d][%d]\n",x,y);
-        for(int line=0; line < x; line++)
+        modelObj = new ObjectModel(x,y);
+
+        for(line=0; line < y; line++)
         {
-            modelObj->model[line] = new int[y];
-            printf("%d  ", line);
-            for(int column=0; column < y; column++)
+            vector<int> temp(x);
+            for(column=0; column < x; column++)
             {
-                file >> modelObj->model[line][column];
-                printf("%d ",modelObj->model[line][column]);
+                file >> temp.at(column);
             }
-            printf("\n");
+            modelObj->model.push_back(temp);
         }
-        printf("X=%d  Y=%d\n",modelObj->x,modelObj->y);
+
         modelsList.push_back(modelObj);
-        printf("X=%d  Y=%d\n",modelsList.at(0)->x,modelsList.at(0)->y);
 
         fprintf(stderr,"%s carregado com sucesso!\n", fileName);
-        printf("Closing %s\n",fileName);
         enemyshipModels--;
         file.close();
     }
+
+    file.open("PShip.txt");
+    printf("Abre pship.txt\n");
+
+    if(!file)
+    {
+        printf("Erro ao carregar o model do jogador!\n");
+        return;
+    }
+
+    file >> y;
+    file >> x;
+    playerModel = new ObjectModel(x,y);
+
+    for(line=0; line<y; line++)
+    {
+        vector<int> temp(x);
+        for(column=0; column<x; column++)
+        {
+            file >> temp.at(column);
+        }
+        playerModel->model.push_back(temp);
+    }
+/*
+    for(int i=0; i<playerModel->model.size(); i++)
+    {
+        for(int j=0; j<playerModel->model.at(i).size(); j++)
+        {
+            printf("%d ",playerModel->model.at(i).at(j));
+        }
+        printf("\n");
+    }
+*/
+    file.close();
+    printf("Load player model\n");
 }
 
 void DrawSquare(int _ix, int _iy, int _fx, int _fy)
@@ -326,28 +363,35 @@ void DrawSquare(int _ix, int _iy, int _fx, int _fy)
     glEnd();
 }
 
-void DrawObject(int* _model[], int _x, int _y, float angle)
+void DrawObject(Point* _pos, ObjectModel* _model, float _angle)
 {
     int sizeCell = 5;
-    int currentX=0,currentY=0,nextX,nextY;
+    int nextX, nextY, x=_model->x, y=_model->y;
+    int currentX = -(x/2) * sizeCell;
+    int currentY = -(y/2) * sizeCell;
+
+    vector<int> temp;
 
     glPushMatrix();
     {
-        glRotated(angle,0,0,1);
-        for(int line=_x-1; line>=0; line--)
+        glTranslatef(_pos->x,_pos->y,0);
+        glRotated(-_angle,0,0,1);
+        for(int line=y-1; line>=0; line--)
         {
+            temp = _model->model.at(line);
             nextY = currentY + sizeCell;
-            for(int column=0; column<_y; column++)
+
+            for(int column=0; column<x; column++)
             {
                 nextX = currentX + sizeCell;
-                if(_model[line][column] != 0)
+                if(temp.at(column) != 0)
                 {
                     DrawSquare(currentX,currentY,nextX,nextY);
                 }
                 currentX = nextX;
             }
             currentY = nextY;
-            currentX = 0;
+            currentX = -(x/2) * sizeCell;
             nextX = 0;
         }
     }
@@ -363,8 +407,11 @@ int  main ( int argc, char** argv )
 {
 
     LoadColorsMatriz();
+    printf("Carrega cores\n");
     LoadModelsObjects();
+    printf("Carrega modelos\n");
     InitializeVariables();
+    printf("Carrega variaveis\n");
 
     glutInit            ( &argc, argv );
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB );

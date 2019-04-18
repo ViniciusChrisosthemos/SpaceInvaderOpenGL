@@ -1,23 +1,14 @@
 #include "ObjectModel.h"
 #include <stdio.h>
+#include <vector>
 
-ObjectModel::ObjectModel()
+ObjectModel::ObjectModel(int _x, int _y)
 {
+    x = _x;
+    y = _y;
 }
 
 ObjectModel::~ObjectModel()
 {
     //dtor
-}
-
-void ObjectModel::printModel()
-{
-    for(int xcount=0; xcount<x; xcount++)
-    {
-        for(int ycount=0; ycount<y; ycount++)
-        {
-            printf("%d ", model[xcount][ycount]);
-        }
-        printf("\n");
-    }
 }

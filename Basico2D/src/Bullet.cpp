@@ -2,8 +2,8 @@
 #include "Point.h"
 #include "math.h"
 
-Bullet::Bullet(float _x, float _y, float _angle, float _limitX, float _limitY):
-    Object(Point(_x,_y), _angle, 10)
+Bullet::Bullet(float _x, float _y, float _angle, float _limitX, float _limitY, ObjectModel* _model):
+    Object(new Point(_x,_y), _angle, 10, _model)
 {
     coordinate = new Point(_x, _y);
     limitX = _limitX;

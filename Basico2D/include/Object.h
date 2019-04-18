@@ -11,9 +11,9 @@ class Object
         int width;
         int height;
         Point *coordinate;
-        ObjectModel model;
+        ObjectModel* model;
 
-        Object(Point _coordinate, float _angle, float _speed);
+        Object(Point* _coordinate, float _angle, float _speed, ObjectModel* _model);
         virtual ~Object();
 
         void SetObjectModel(ObjectModel* _newModel);

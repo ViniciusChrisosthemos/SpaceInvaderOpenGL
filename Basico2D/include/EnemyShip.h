@@ -2,6 +2,7 @@
 #define ENEMYSHIP_H
 #include "Point.h"
 #include "Object.h"
+#include <ObjectModel.h>
 
 class EnemyShip : public Object
 {
@@ -13,7 +14,7 @@ class EnemyShip : public Object
         Point *target;
         float t;
 
-        EnemyShip(Point *_target);
+        EnemyShip(Point *_target, ObjectModel* _model);
         virtual ~EnemyShip();
         void MoveEShip();
 
