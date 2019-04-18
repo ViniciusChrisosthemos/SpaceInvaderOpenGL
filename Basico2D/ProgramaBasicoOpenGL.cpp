@@ -163,7 +163,7 @@ void display( void )
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
+    Process();
     Draw();
 
 	glutSwapBuffers();
@@ -225,6 +225,13 @@ void arrow_keys ( int a_keys, int x, int y )
 void Draw()
 {
     DrawObject(player->coordinate, player->model,player->angle);
+
+    EnemyShip* temp;
+    for(int i=0; i<enemysList.size(); i++)
+    {
+        temp = enemysList.at(i);
+        DrawObject(temp->coordinate, temp->model, temp->angle);
+    }
 }
 
 void InitializeVariables()
@@ -236,13 +243,12 @@ void InitializeVariables()
 
     //Inicia a nave do jogador
     player = new PlayerShip(new Point(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel);
-    /*
-    //Inicia as naves inimigas
-    for(int i=0; i<ENEMYAMOUNT; i++)
-    {
 
-    }
-    */
+    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(0)));
+    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(1)));
+    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(2)));
+    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(3)));
+
 }
 
 void LoadColorsMatriz()
@@ -398,6 +404,13 @@ void DrawObject(Point* _pos, ObjectModel* _model, float _angle)
     glPopMatrix();
 }
 
+void Process()
+{
+    for(int i=0; i<enemysList.size(); i++)
+    {
+        enemysList.at(i)->MoveEShip();
+    }
+}
 
 
 // **********************************************************************
