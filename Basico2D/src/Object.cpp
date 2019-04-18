@@ -11,3 +11,8 @@ Object::~Object()
 {
     delete coordinate;
 }
+
+void ObjectSetObjectModel(ObjectModel* _newModel)
+{
+    model = _newModel;
+}

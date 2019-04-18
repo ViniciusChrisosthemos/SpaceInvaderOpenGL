@@ -36,6 +36,7 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-framework CoreFoundation" />
@@ -60,6 +61,7 @@
 					<Add option="-Wno-unused-but-set-variable" />
 					<Add option="-DFREEGLUT_STATIC" />
 					<Add directory="GL" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add library="libFreeGLUT.a" />
@@ -80,6 +82,23 @@
 		</Compiler>
 		<Unit filename="ProgramaBasicoOpenGL.cpp" />
 		<Unit filename="Util.cpp" />
+		<Unit filename="colors.txt" />
+		<Unit filename="include/Bullet.h" />
+		<Unit filename="include/BulletList.h" />
+		<Unit filename="include/EnemyShip.h" />
+		<Unit filename="include/GameManager.h" />
+		<Unit filename="include/ModelObject.h" />
+		<Unit filename="include/Object.h" />
+		<Unit filename="include/PlayerShip.h" />
+		<Unit filename="include/Point.h" />
+		<Unit filename="src/Bullet.cpp" />
+		<Unit filename="src/BulletList.cpp" />
+		<Unit filename="src/EnemyShip.cpp" />
+		<Unit filename="src/GameManager.cpp" />
+		<Unit filename="src/ModelObject.cpp" />
+		<Unit filename="src/Object.cpp" />
+		<Unit filename="src/PlayerShip.cpp" />
+		<Unit filename="src/Point.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

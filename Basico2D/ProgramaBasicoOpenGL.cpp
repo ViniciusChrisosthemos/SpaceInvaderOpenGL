@@ -20,11 +20,11 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include <GameManager.h>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <stdlib.h>
+#include <ObjectModel.h>
 
 using namespace std;
 
@@ -45,27 +45,36 @@ static struct timeval last_idle_time;
 #include <glut.h>
 #endif
 
-GameManager *gameManager = new GameManager();
 
+
+// Variáveis Globais
+int WIDTHSCREEN;
+int HEIGHTSCREEN;
+int ENEMYAMOUNT;
+vector<ObjectModel*> modelsList;
+vector<EnemyShip*> enemysList;
+PlayerShip* player;
+
+// Métodos OpenGL
+void animate();
+void init(void);
+void reshape( int w, int h );
+void display( void );
+void keyboard ( unsigned char key, int x, int y );
+void arrow_keys ( int a_keys, int x, int y );
+
+// Métodos do Jogo
+void DrawObject(int* _model[], int _x, int _y, float angle);
+void DrawSquare(int _ix, int _iy, int _fx, int _fy);
+void LoadColorsMatriz();
+void LoadModelsObjects();
+void InitializeVariables();
+void Process();
 void Draw();
-
-void Draw()
-{
-    int size = 5;
-    glBegin(GL_TRIANGLES);
-    {
-        glVertex2d(-size,size);
-        glVertex2d(size,0);
-        glVertex2d(-size,-size);
-    }
-    glEnd();
-}
 
 
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
-//
-//
 // **********************************************************************
 void animate()
 {
@@ -104,7 +113,6 @@ void animate()
 // **********************************************************************
 //  void init(void)
 //  Inicializa os parâmetros globais de OpenGL
-//
 // **********************************************************************
 void init(void)
 {
@@ -116,7 +124,6 @@ void init(void)
 // **********************************************************************
 //  void reshape( int w, int h )
 //  trata o redimensionamento da janela OpenGL
-//
 // **********************************************************************
 void reshape( int w, int h )
 {
@@ -131,81 +138,10 @@ void reshape( int w, int h )
     glLoadIdentity();
     glOrtho(0,10,0,10,0,1);
 }
+
 // **********************************************************************
 //  void display( void )
-//
 // **********************************************************************
-void DrawBullet()
-{
-    int size = 2;
-    glBegin(GL_QUADS);
-    {
-        glVertex2d(-size,-size);
-        glVertex2d(size,-size);
-        glVertex2d(size,size);
-        glVertex2d(-size,size);
-    }
-    glEnd();
-}
-
-void LoadColorsMatriz()
-{
-    ifstream file;
-    int currentInt,i,temp;
-
-    file.open("colors.txt");
-
-    if(!file)
-    {
-        printf("Erro ao ler o arquivo!");
-        return;
-    }
-
-    file >> temp;
-    int colorMatriz[3][temp];
-
-    while(file >> currentInt)
-    {
-        for(i=0; i<3; i++)
-        {
-            file >> temp;
-            colorMatriz[i][currentInt-1] = temp;
-        }
-    }
-
-    file.close();
-}
-
-//https://www.quora.com/How-do-I-open-files-using-an-array-in-C
-void LoadModelsObjects()
-{
-    ifstream file;
-    int enemyshipModels;
-    char fileName[1024];
-
-    cout << "Informe o número de modelos de naves: ";
-    cin >> enemyshipModels;
-
-    while(enemyshipModels)
-    {
-        sprintf(fileName,"EShip%d.txt",enemyshipModels);
-        file.open(fileName);
-
-        if(!file)
-        {
-            fprintf(stderr,"%s nao encontrado!\n", fileName);
-            return;
-        }
-
-        printf("Open %s\n",fileName);
-
-
-
-        enemyshipModels--;
-        file.close();
-    }
-}
-
 void display( void )
 {
 
@@ -217,7 +153,7 @@ void display( void )
     glLoadIdentity();
     //glOrtho(-WIDTHSCREEN,WIDTHSCREEN,-HEIGHTSCREEN,HEIGHTSCREEN,0,1);
     glOrtho(0,gameManager->WIDTHSCREEN,0,gameManager->HEIGHTSCREEN,0,1);
-
+    glTranslated(400,300,0);
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -227,12 +163,9 @@ void display( void )
 	glutSwapBuffers();
 }
 
-
 // **********************************************************************
 //  void keyboard ( unsigned char key, int x, int y )
-//
 // **********************************************************************
-
 void keyboard ( unsigned char key, int x, int y )
 {
 
@@ -243,22 +176,15 @@ void keyboard ( unsigned char key, int x, int y )
 			break;
 
         case 'w':
-            //gameManager->playerShip.MoveShip(0,gameManager->WIDTHSCREEN,0,gameManager->HEIGHTSCREEN);
-            LoadColorsMatriz();
             break;
 
         case 'a':
-            //gameManager->playerShip.Rotate(true);
-            LoadModelsObjects();
             break;
 
         case 'd':
-            gameManager->playerShip.Rotate(false);
             break;
 
         case ' ':
-            gameManager->playerShip.Shoot(gameManager->WIDTHSCREEN,gameManager->HEIGHTSCREEN);
-            //printf("Bx=%f,By=%f\n",player.bullets[0].coordinate->x,player.bullets[0].coordinate->y);
             break;
 
 		default:
@@ -266,11 +192,8 @@ void keyboard ( unsigned char key, int x, int y )
 	}
 }
 
-
 // **********************************************************************
 //  void arrow_keys ( int a_keys, int x, int y )
-//
-//
 // **********************************************************************
 void arrow_keys ( int a_keys, int x, int y )
 {
@@ -289,13 +212,160 @@ void arrow_keys ( int a_keys, int x, int y )
 	}
 }
 
+void InitializeVariables()
+{
+    //Inicia variaveis do ambiente
+    WIDTHSCREEN = 800;
+    HEIGHTSCREEN = 600;
+    ENEMYAMOUNT = 6;
+
+    //Inicia a nave do jogador
+    player = new PlayerShip();
+    /*
+    //Inicia as naves inimigas
+    for(int i=0; i<ENEMYAMOUNT; i++)
+    {
+
+    }
+    */
+}
+
+void LoadColorsMatriz()
+{
+    ifstream file;
+    int currentInt,i,temp;
+
+    file.open("colors.txt");
+
+    if(!file)
+    {
+        printf("Erro ao ler o arquivo!");
+        return;
+    }
+
+    file >> temp;
+    int colorMatriz[temp][3];
+
+    while(file >> currentInt)
+    {
+        for(i=0; i<3; i++)
+        {
+            file >> temp;
+            colorMatriz[currentInt-1][i] = temp;
+        }
+    }
+
+    file.close();
+}
+
+//https://www.quora.com/How-do-I-open-files-using-an-array-in-C
+void LoadModelsObjects()
+{
+    ifstream file;
+    int enemyshipModels;
+    char fileName[1024];
+
+    cout << "Informe o número de modelos de naves: ";
+    cin >> enemyshipModels;
+    int x,y;
+    ObjectModel* modelObj;
+
+    while(enemyshipModels)
+    {
+        sprintf(fileName,"EShip%d.txt",enemyshipModels);
+        file.open(fileName);
+
+        if(!file)
+        {
+            fprintf(stderr,"%s nao encontrado!\n", fileName);
+            return;
+        }
+        printf("Open %s\n",fileName);
+        printf("Processing ............%s\n",fileName);
+
+        file >> x;
+        file >> y;
+
+        modelObj = new ObjectModel();
+        modelObj->model[x];
+        modelObj->x = x;
+        modelObj->y = y;
+        printf("X=%d  Y=%d\n",modelObj->x,modelObj->y);
+        printf("Matriz[%d][%d]\n",x,y);
+        for(int line=0; line < x; line++)
+        {
+            modelObj->model[line] = new int[y];
+            printf("%d  ", line);
+            for(int column=0; column < y; column++)
+            {
+                file >> modelObj->model[line][column];
+                printf("%d ",modelObj->model[line][column]);
+            }
+            printf("\n");
+        }
+        printf("X=%d  Y=%d\n",modelObj->x,modelObj->y);
+        modelsList.push_back(modelObj);
+        printf("X=%d  Y=%d\n",modelsList.at(0)->x,modelsList.at(0)->y);
+
+        fprintf(stderr,"%s carregado com sucesso!\n", fileName);
+        printf("Closing %s\n",fileName);
+        enemyshipModels--;
+        file.close();
+    }
+}
+
+void DrawSquare(int _ix, int _iy, int _fx, int _fy)
+{
+    glBegin(GL_QUADS);
+    {
+        glVertex2d(_ix,_iy);
+        glVertex2d(_fx,_iy);
+        glVertex2d(_fx,_fy);
+        glVertex2d(_ix,_fy);
+    }
+    glEnd();
+}
+
+void DrawObject(int* _model[], int _x, int _y, float angle)
+{
+    int sizeCell = 5;
+    int currentX=0,currentY=0,nextX,nextY;
+
+    glPushMatrix();
+    {
+        glRotated(angle,0,0,1);
+        for(int line=_x-1; line>=0; line--)
+        {
+            nextY = currentY + sizeCell;
+            for(int column=0; column<_y; column++)
+            {
+                nextX = currentX + sizeCell;
+                if(_model[line][column] != 0)
+                {
+                    DrawSquare(currentX,currentY,nextX,nextY);
+                }
+                currentX = nextX;
+            }
+            currentY = nextY;
+            currentX = 0;
+            nextX = 0;
+        }
+    }
+    glPopMatrix();
+}
+
+
+
 // **********************************************************************
 //  void main ( int argc, char** argv )
-//
-//
 // **********************************************************************
 int  main ( int argc, char** argv )
 {
+
+    LoadColorsMatriz();
+    LoadModelsObjects();
+    InitializeVariables();
+
     glutInit            ( &argc, argv );
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB );
     glutInitWindowPosition (0,0);

@@ -1,18 +1,22 @@
 #ifndef OBJECT_H
 #define OBJECT_H
-#include "Point.h"
+#include <Point.h>
+#include <ObjectModel.h>
 
 class Object
 {
     public:
-        Point *coordinate;
         float angle;
         float speed;
         int width;
         int height;
+        Point *coordinate;
+        ObjectModel model;
 
         Object(Point _coordinate, float _angle, float _speed);
         virtual ~Object();
+
+        void SetObjectModel(ObjectModel* _newModel);
 
     protected:
 
