@@ -13,13 +13,23 @@ EnemyShip::EnemyShip(Point *_target, ObjectModel* _model, int _xLimit, int _yLim
         target = _target;
         xLimit = _xLimit;
         yLimit = _yLimit;
-        if(rand()%2)
+
+        switch(rand()%4)
         {
-            coordinate = new Point(rand()%xLimit,0);
-        }else
-        {
-            coordinate = new Point(rand()%xLimit,yLimit);
+            case 0:
+                coordinate = new Point(rand()%xLimit,0);
+                break;
+            case 1:
+                coordinate = new Point(rand()%xLimit,yLimit);
+                break;
+            case 2:
+                coordinate = new Point(0,rand()%yLimit);
+                break;
+            case 3:
+                coordinate = new Point(xLimit,rand()%yLimit);
+                break;
         }
+
         p0 = new Point(coordinate->x,coordinate->y);
         p1 = new Point(rand()%800,rand()%600);
         p2 = new Point(rand()%800,rand()%600);
@@ -47,8 +57,8 @@ void EnemyShip::MoveEShip()
         p0 = p3;
         p1 = new Point(p3->x*2.0 - p2->x,p3->y*2.0 - p2->y);
         p2 = new Point(rand()%xLimit,rand()%yLimit);
-        //p3 = new Point(target->x,target->y);
-        p3 = new Point(rand()%xLimit,rand()%yLimit);
+        p3 = new Point(target->x,target->y);
+        //p3 = new Point(rand()%xLimit,rand()%yLimit);
         printf("P2(%f,%f),P1(%f,%f),P2(%f,%f),P3(%f,%f)\n",p0->x,p0->y,p1->x,p1->y,p2->x,p2->y,p3->x,p3->y);
     };
 }

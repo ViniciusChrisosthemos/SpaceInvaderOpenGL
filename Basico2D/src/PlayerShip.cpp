@@ -10,6 +10,7 @@
 PlayerShip::PlayerShip(Point* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel) :
     Object(_initialPosition, 0, 0, _model)
 {
+    health = 3;
     angle = 0;
     speed = 5;
     width = 2;
@@ -45,6 +46,12 @@ void PlayerShip::Shoot(int widthScreen, int heightScreen)
         Bullet* bullet = new Bullet(new Point(coordinate->x,coordinate->y),angle,widthScreen,heightScreen, bulletModel);
         bullets.push_back(bullet);
     }
+}
+
+void PlayerShip::TakeDamage()
+{
+    health--;
+    if(health <= 0) inGame = false;
 }
 
 

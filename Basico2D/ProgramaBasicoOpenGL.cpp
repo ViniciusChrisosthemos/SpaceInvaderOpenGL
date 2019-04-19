@@ -50,7 +50,10 @@ static struct timeval last_idle_time;
 #include <glut.h>
 #endif
 
+enum State{INGAME,GAMEOVER};
+
 // Variáveis Globais
+State state;
 int WIDTHSCREEN;
 int HEIGHTSCREEN;
 int ENEMYAMOUNT;
@@ -79,6 +82,7 @@ void InitializeVariables();
 void Process();
 void Draw();
 bool IsColliding(Object* obj1, Object* obj2);
+void GameOver();
 
 
 // **********************************************************************
@@ -164,9 +168,16 @@ void display( void )
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    Process();
-    Draw();
-
+    switch(state)
+    {
+        case INGAME:
+            Process();
+            Draw();
+            break;
+        case GAMEOVER:
+            GameOver();
+            break;
+    }
 	glutSwapBuffers();
 }
 
@@ -254,9 +265,10 @@ bool IsColliding(Object* obj1, Object* obj2)
 void InitializeVariables()
 {
     //Inicia variaveis do ambiente
+    state = INGAME;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 7;
+    ENEMYAMOUNT = 1;
 
     //Inicia a nave do jogador
     player = new PlayerShip(new Point(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModel);
@@ -295,6 +307,12 @@ void LoadColorsMatriz()
     }
 
     file.close();
+}
+
+void GameOver()
+{
+    printf("GAME OVER!!!\n");
+    exit(0);
 }
 
 //https://www.quora.com/How-do-I-open-files-using-an-array-in-C
@@ -469,16 +487,29 @@ void ClearObjects()
 
 void Process()
 {
+    if(!player->inGame)
+    {
+        state = GAMEOVER;
+        return;
+    }
+
     ClearObjects();
 
+    EnemyShip* enemy;
     for(int i=0; i<enemysList.size(); i++)
     {
-        enemysList.at(i)->MoveEShip();
+        enemy = enemysList.at(i);
+        enemy->MoveEShip();
+
+        if(IsColliding(player,enemy))
+        {
+            player->TakeDamage();
+            enemy->inGame = false;
+        }
     }
 
 
     Bullet* bullet;
-    EnemyShip* enemy;
     for(int i=0; i<player->bullets.size(); i++)
     {
         bullet = player->bullets.at(i);
@@ -495,6 +526,8 @@ void Process()
             }
         }
     }
+
+
 
 }
 

@@ -10,6 +10,7 @@ class PlayerShip : public Object
     public:
         std::vector<Bullet*> bullets;
         ObjectModel* bulletModel;
+        int health;
 
         PlayerShip(Point* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel);
         virtual ~PlayerShip();
@@ -17,6 +18,7 @@ class PlayerShip : public Object
         void MoveShip(int minX,int maxX,int minY,int maxY);
         void Rotate(bool toRight);
         void Shoot(int widthScreen, int heightScreen);
+        void TakeDamage();
 
     protected:
 
