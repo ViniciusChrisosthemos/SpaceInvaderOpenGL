@@ -17,7 +17,6 @@ class PlayerShip : public Object
         void MoveShip(int minX,int maxX,int minY,int maxY);
         void Rotate(bool toRight);
         void Shoot(int widthScreen, int heightScreen);
-        void MoveBullets();
 
     protected:
 

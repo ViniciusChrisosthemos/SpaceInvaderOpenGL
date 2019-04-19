@@ -7,9 +7,8 @@ Bullet::Bullet(Point* _coord, float _angle, float _limitX, float _limitY, Object
 {
     limitX = _limitX;
     limitY = _limitY;
-    inGame = true;
     angle = _angle;
-
+    inGame = true;
 
     float auxX = cos(angle*(M_PI/180)) * 20;
     float auxY = sin(angle*(M_PI/180)) * 20;

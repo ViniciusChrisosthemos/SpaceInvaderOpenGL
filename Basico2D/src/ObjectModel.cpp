@@ -4,9 +4,9 @@
 
 ObjectModel::ObjectModel()
 {
+    sizePixel = 1.0;
 }
 
 ObjectModel::~ObjectModel()
 {
-    delete model;
 }

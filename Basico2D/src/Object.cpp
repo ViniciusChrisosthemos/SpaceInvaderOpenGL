@@ -6,6 +6,9 @@ Object::Object(Point* _coordinate, float _angle, float _speed, ObjectModel* _mod
     angle = _angle;
     speed = _speed;
     model = _model;
+    width = _model->model.at(0).size() * _model->sizePixel;
+    height = _model->model.size() * _model->sizePixel;
+    inGame = true;
 }
 
 Object::~Object()

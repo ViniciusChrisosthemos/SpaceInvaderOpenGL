@@ -5,6 +5,7 @@
 class ObjectModel
 {
     public:
+        float sizePixel;
         std::vector< std::vector<int> > model;
 
         ObjectModel();

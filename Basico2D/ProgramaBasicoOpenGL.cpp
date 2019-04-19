@@ -78,6 +78,7 @@ void LoadModelsObjects();
 void InitializeVariables();
 void Process();
 void Draw();
+bool IsColliding(Object* obj1, Object* obj2);
 
 
 // **********************************************************************
@@ -241,18 +242,31 @@ void Draw()
     }
 }
 
+bool IsColliding(Object* obj1, Object* obj2)
+{
+    if((obj2->coordinate->x + obj2->width) < obj1->coordinate->x) return false;
+    if((obj2->coordinate->x - obj2->width) > obj1->coordinate->x) return false;
+    if((obj2->coordinate->y + obj2->height) < obj1->coordinate->y) return false;
+    if((obj2->coordinate->y - obj2->height) > obj1->coordinate->y) return false;
+    return true;
+}
+
 void InitializeVariables()
 {
     //Inicia variaveis do ambiente
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 6;
+    ENEMYAMOUNT = 7;
 
     //Inicia a nave do jogador
     player = new PlayerShip(new Point(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModel);
 
+    srand(rand()%1000);
 
-
+    for(int i=0; i<ENEMYAMOUNT; i++)
+    {
+        enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(rand()%modelsList.size()), WIDTHSCREEN, HEIGHTSCREEN));
+    }
 }
 
 void LoadColorsMatriz()
@@ -307,7 +321,7 @@ void LoadModelsObjects()
         file >> x;
 
         modelObj = new ObjectModel();
-
+        file >> modelObj->sizePixel;
         for(line=0; line < y; line++)
         {
             vector<int> temp(x);
@@ -337,7 +351,7 @@ void LoadModelsObjects()
     file >> y;
     file >> x;
     playerModel = new ObjectModel();
-
+    file >> playerModel->sizePixel;
     for(line=0; line<y; line++)
     {
         vector<int> temp(x);
@@ -359,7 +373,7 @@ void LoadModelsObjects()
     file >> y;
     file >> x;
     bulletModel = new ObjectModel();
-
+    file >> bulletModel->sizePixel;
     for(line=0; line<y; line++)
     {
         vector<int> temp(x);
@@ -397,7 +411,7 @@ void DrawSquare(int _ix, int _iy, int _fx, int _fy)
 
 void DrawObject(Point* _pos, ObjectModel* _model, float _angle)
 {
-    int sizeCell = 5;
+    int sizeCell = _model->sizePixel;
     int nextX, nextY;
     int y = _model->model.size();
     int x = _model->model.at(0).size();
@@ -432,14 +446,56 @@ void DrawObject(Point* _pos, ObjectModel* _model, float _angle)
     glPopMatrix();
 }
 
+void ClearObjects()
+{
+    int i;
+    for(i=0; i<enemysList.size(); i++)
+    {
+        if(!enemysList.at(i)->inGame)
+        {
+            enemysList.erase(enemysList.begin()+i);
+        }
+    }
+
+    for(i=0; i<player->bullets.size(); i++)
+    {
+
+        if(!player->bullets.at(i)->inGame)
+        {
+            player->bullets.erase(player->bullets.begin()+i);
+        }
+    }
+}
+
 void Process()
 {
+    ClearObjects();
+
     for(int i=0; i<enemysList.size(); i++)
     {
         enemysList.at(i)->MoveEShip();
     }
 
-    player->MoveBullets();
+
+    Bullet* bullet;
+    EnemyShip* enemy;
+    for(int i=0; i<player->bullets.size(); i++)
+    {
+        bullet = player->bullets.at(i);
+        bullet->MoveBullet();
+
+        for(int j=0; j<enemysList.size(); j++)
+        {
+            enemy = enemysList.at(j);
+            if(IsColliding(bullet,enemy))
+            {
+                enemy->inGame = false;
+                bullet->inGame = false;
+                break;
+            }
+        }
+    }
+
 }
 
 

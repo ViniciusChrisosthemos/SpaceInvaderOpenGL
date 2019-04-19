@@ -47,17 +47,4 @@ void PlayerShip::Shoot(int widthScreen, int heightScreen)
     }
 }
 
-void PlayerShip::MoveBullets()
-{
-    Bullet* bullet;
-    for(int i=0; i<bullets.size(); i++)
-    {
-        bullet = bullets.at(i);
-        bullet->MoveBullet();
-        if(!bullet->inGame)
-        {
-            bullets.erase(bullets.begin()+i);
-        }
-    }
-}
 

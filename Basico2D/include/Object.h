@@ -12,6 +12,7 @@ class Object
         int height;
         Point *coordinate;
         ObjectModel* model;
+        bool inGame;
 
         Object(Point* _coordinate, float _angle, float _speed, ObjectModel* _model);
         virtual ~Object();
