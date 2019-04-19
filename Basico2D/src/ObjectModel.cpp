@@ -2,13 +2,11 @@
 #include <stdio.h>
 #include <vector>
 
-ObjectModel::ObjectModel(int _x, int _y)
+ObjectModel::ObjectModel()
 {
-    x = _x;
-    y = _y;
 }
 
 ObjectModel::~ObjectModel()
 {
-    //dtor
+    delete model;
 }

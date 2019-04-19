@@ -16,8 +16,6 @@ class Object
         Object(Point* _coordinate, float _angle, float _speed, ObjectModel* _model);
         virtual ~Object();
 
-        void SetObjectModel(ObjectModel* _newModel);
-
     protected:
 
     private:

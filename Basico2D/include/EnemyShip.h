@@ -12,9 +12,10 @@ class EnemyShip : public Object
         Point *p2;
         Point *p3;
         Point *target;
+        int xLimit,yLimit;
         float t;
 
-        EnemyShip(Point *_target, ObjectModel* _model);
+        EnemyShip(Point *_target, ObjectModel* _model, int _xLimit, int _yLimit);
         virtual ~EnemyShip();
         void MoveEShip();
 

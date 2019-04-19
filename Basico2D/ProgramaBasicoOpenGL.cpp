@@ -30,6 +30,7 @@
 #include <ObjectModel.h>
 #include <Point.h>
 
+
 using namespace std;
 
 #ifdef WIN32
@@ -49,8 +50,6 @@ static struct timeval last_idle_time;
 #include <glut.h>
 #endif
 
-
-
 // Variáveis Globais
 int WIDTHSCREEN;
 int HEIGHTSCREEN;
@@ -59,6 +58,7 @@ int ENEMYMODELS = 5;
 vector<ObjectModel*> modelsList;
 vector<EnemyShip*> enemysList;
 ObjectModel* playerModel;
+ObjectModel* bulletModel;
 PlayerShip* player;
 
 
@@ -224,13 +224,20 @@ void arrow_keys ( int a_keys, int x, int y )
 
 void Draw()
 {
+    int i;
     DrawObject(player->coordinate, player->model,player->angle);
 
     EnemyShip* temp;
-    for(int i=0; i<enemysList.size(); i++)
+    for(i=0; i<enemysList.size(); i++)
     {
         temp = enemysList.at(i);
         DrawObject(temp->coordinate, temp->model, temp->angle);
+    }
+    Bullet* bullet;
+    for(i=0; i<player->bullets.size(); i++)
+    {
+        bullet = player->bullets.at(i);
+        DrawObject(bullet->coordinate, bullet->model, bullet->angle);
     }
 }
 
@@ -242,12 +249,9 @@ void InitializeVariables()
     ENEMYAMOUNT = 6;
 
     //Inicia a nave do jogador
-    player = new PlayerShip(new Point(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel);
+    player = new PlayerShip(new Point(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModel);
 
-    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(0)));
-    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(1)));
-    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(2)));
-    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(3)));
+
 
 }
 
@@ -285,8 +289,8 @@ void LoadModelsObjects()
     ifstream file;
     char fileName[1024];
     int x,y,line,column;
-    ObjectModel* modelObj;
     int enemyshipModels = ENEMYMODELS;
+    ObjectModel* modelObj;
 
     while(enemyshipModels)
     {
@@ -302,7 +306,7 @@ void LoadModelsObjects()
         file >> y;
         file >> x;
 
-        modelObj = new ObjectModel(x,y);
+        modelObj = new ObjectModel();
 
         for(line=0; line < y; line++)
         {
@@ -332,7 +336,7 @@ void LoadModelsObjects()
 
     file >> y;
     file >> x;
-    playerModel = new ObjectModel(x,y);
+    playerModel = new ObjectModel();
 
     for(line=0; line<y; line++)
     {
@@ -342,6 +346,28 @@ void LoadModelsObjects()
             file >> temp.at(column);
         }
         playerModel->model.push_back(temp);
+    }
+    file.close();
+    file.open("Bullet.txt");
+
+    if(!file)
+    {
+        printf("Erro ao carregar o modelo do disparo!\n");
+        return;
+    }
+
+    file >> y;
+    file >> x;
+    bulletModel = new ObjectModel();
+
+    for(line=0; line<y; line++)
+    {
+        vector<int> temp(x);
+        for(column=0; column<x; column++)
+        {
+            file >> temp.at(column);
+        }
+        bulletModel->model.push_back(temp);
     }
 /*
     for(int i=0; i<playerModel->model.size(); i++)
@@ -372,7 +398,9 @@ void DrawSquare(int _ix, int _iy, int _fx, int _fy)
 void DrawObject(Point* _pos, ObjectModel* _model, float _angle)
 {
     int sizeCell = 5;
-    int nextX, nextY, x=_model->x, y=_model->y;
+    int nextX, nextY;
+    int y = _model->model.size();
+    int x = _model->model.at(0).size();
     int currentX = -(x/2) * sizeCell;
     int currentY = -(y/2) * sizeCell;
 
@@ -381,7 +409,7 @@ void DrawObject(Point* _pos, ObjectModel* _model, float _angle)
     glPushMatrix();
     {
         glTranslatef(_pos->x,_pos->y,0);
-        glRotated(-_angle,0,0,1);
+        glRotated(_angle,0,0,1);
         for(int line=y-1; line>=0; line--)
         {
             temp = _model->model.at(line);
@@ -410,6 +438,8 @@ void Process()
     {
         enemysList.at(i)->MoveEShip();
     }
+
+    player->MoveBullets();
 }
 
 

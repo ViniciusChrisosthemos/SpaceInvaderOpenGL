@@ -5,11 +5,9 @@
 class ObjectModel
 {
     public:
-        int x;
-        int y;
         std::vector< std::vector<int> > model;
 
-        ObjectModel(int _x, int _y);
+        ObjectModel();
         virtual ~ObjectModel();
 
     protected:

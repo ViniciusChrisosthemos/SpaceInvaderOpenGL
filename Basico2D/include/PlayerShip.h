@@ -3,18 +3,17 @@
 #include <Object.h>
 #include <Bullet.h>
 #include <vector>
-#include <BulletList.h>
 #include <ObjectModel.h>
 
 class PlayerShip : public Object
 {
     public:
-        int forceRotate;
         std::vector<Bullet*> bullets;
-        int currentBullets;
+        ObjectModel* bulletModel;
 
-        PlayerShip(Point* _initialPosition, ObjectModel* _model);
+        PlayerShip(Point* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel);
         virtual ~PlayerShip();
+
         void MoveShip(int minX,int maxX,int minY,int maxY);
         void Rotate(bool toRight);
         void Shoot(int widthScreen, int heightScreen);

@@ -11,10 +11,12 @@ class Bullet : public Object
         bool inGame;
         float alfaX;
         float alfaY;
+        int i;
 
-        Bullet(Point* _coord, float _angle, float _limitX, float _limitY, ObjectModel* _model);
+        Bullet(float _x, float _y, float _angle, float _limitX, float _limitY, ObjectModel* _model);
         virtual ~Bullet();
         void MoveBullet();
+        Bullet* NewBullet(Point* _coord, float angle, float _limitX, float _limitY);
 
     protected:
 

@@ -7,15 +7,14 @@
 #include <vector>
 #include <ObjectModel.h>
 
-PlayerShip::PlayerShip(Point* _initialPosition, ObjectModel* _model) :
+PlayerShip::PlayerShip(Point* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel) :
     Object(_initialPosition, 0, 0, _model)
 {
     angle = 0;
     speed = 5;
     width = 2;
     height = 3;
-    currentBullets = 0;
-    forceRotate = 15;
+    bulletModel = _bulletModel;
 }
 
 PlayerShip::~PlayerShip()
@@ -25,8 +24,8 @@ PlayerShip::~PlayerShip()
 
 void PlayerShip::MoveShip(int minX,int maxX,int minY,int maxY)
 {
-    coordinate->x += sin(angle*(M_PI/180)) * speed;
-    coordinate->y += cos(angle*(M_PI/180)) * speed;
+    coordinate->x += cos(angle*(M_PI/180)) * speed;
+    coordinate->y += sin(angle*(M_PI/180)) * speed;
 
     if(coordinate->x < minX) coordinate->x = minX;
     else if(coordinate->x > maxX) coordinate->x = maxX;
@@ -36,32 +35,28 @@ void PlayerShip::MoveShip(int minX,int maxX,int minY,int maxY)
 
 void PlayerShip::Rotate(bool toRight)
 {
-    angle += (toRight) ? forceRotate:-forceRotate;
+    angle += (toRight) ? -15:15;
 }
 
 void PlayerShip::Shoot(int widthScreen, int heightScreen)
 {
-    if(currentBullets < 10)
+    if(bullets.size() <= 10)
     {
-        Bullet* bullet = new Bullet(coordinate->x,coordinate->y,angle,0,0, new ObjectModel(0,0));
-
+        Bullet* bullet = new Bullet(new Point(coordinate->x,coordinate->y),angle,widthScreen,heightScreen, bulletModel);
         bullets.push_back(bullet);
-        currentBullets++;
     }
 }
 
 void PlayerShip::MoveBullets()
 {
-    int i;
     Bullet* bullet;
-    for(i=0; i<currentBullets; i++)
+    for(int i=0; i<bullets.size(); i++)
     {
         bullet = bullets.at(i);
         bullet->MoveBullet();
         if(!bullet->inGame)
         {
             bullets.erase(bullets.begin()+i);
-            currentBullets--;
         }
     }
 }

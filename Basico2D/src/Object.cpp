@@ -13,8 +13,3 @@ Object::~Object()
     delete coordinate;
     delete model;
 }
-
-void Object::SetObjectModel(ObjectModel* _newModel)
-{
-    model = _newModel;
-}
