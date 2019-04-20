@@ -1,7 +1,10 @@
 #include "Bullet.h"
 #include "Position.h"
 #include "math.h"
-
+// **********************************************************************
+// Bullet(Position* _coord, float _angle, float _limitX, float _limitY, ObjectModel* _model): Object(_coord, _angle, 10, _model)
+// Construtor da Classe Bullet
+// **********************************************************************
 Bullet::Bullet(Position* _coord, float _angle, float _limitX, float _limitY, ObjectModel* _model):
     Object(_coord, _angle, 10, _model)
 {
@@ -16,12 +19,18 @@ Bullet::Bullet(Position* _coord, float _angle, float _limitX, float _limitY, Obj
     alfaX = auxX/alfa;
     alfaY = auxY/alfa;
 }
-
+// **********************************************************************
+// ~Bullet()
+// Desconstrutor da Classe Bullet
+// **********************************************************************
 Bullet::~Bullet()
 {
 
 }
-
+// **********************************************************************
+// void MoveBullet()
+// Move as a bala, alterando sua posição
+// **********************************************************************
 void Bullet::MoveBullet()
 {
     coordinate->x += alfaX*speed;

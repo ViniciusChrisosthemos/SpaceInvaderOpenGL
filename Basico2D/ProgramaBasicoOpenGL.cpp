@@ -75,7 +75,7 @@ void keyboard ( unsigned char key, int x, int y );
 void arrow_keys ( int a_keys, int x, int y );
 
 // Métodos do Jogo
-void DrawObject(Position* pos, ObjectModel* _model, float _angle);
+void DrawObject(Position* pos, ObjectModel* _model, float _angle, float _sizeCell);
 void DrawSquare(int _ix, int _iy, int _fx, int _fy);
 void LoadColorsList();
 void LoadModelsObjects();
@@ -193,19 +193,19 @@ void keyboard ( unsigned char key, int x, int y )
 		case 27:        // Termina o programa qdo
 			exit ( 0 );   // a tecla ESC for pressionada
 			break;
-
+        //Move a nave do jogador
         case 'w':
             player->MoveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
             break;
-
+        //Rotaciona a nave para a esquerda
         case 'a':
             player->Rotate(false);
             break;
-
+        //Rotaciona a nave para a direita
         case 'd':
             player->Rotate(true);
             break;
-
+        //Atira com a nave
         case ' ':
             player->Shoot(WIDTHSCREEN,HEIGHTSCREEN);
             break;
@@ -234,28 +234,34 @@ void arrow_keys ( int a_keys, int x, int y )
 			break;
 	}
 }
-
+// **********************************************************************
+//  void Draw ()
+// Desenha todos os objetos do jogo na tela
+// **********************************************************************
 void Draw()
 {
     int i;
-    DrawObject(player->coordinate, player->model,player->angle);
+    DrawObject(player->coordinate, player->model,player->angle-90, player->model->sizePixel);
 
     EnemyShip* temp;
     for(i=0; i<enemysList.size(); i++)
     {
         temp = enemysList.at(i);
-        DrawObject(temp->coordinate, temp->model, temp->angle);
+        DrawObject(temp->coordinate, temp->model, temp->angle, temp->model->sizePixel);
     }
     Bullet* bullet;
     for(i=0; i<player->bullets.size(); i++)
     {
         bullet = player->bullets.at(i);
-        DrawObject(bullet->coordinate, bullet->model, bullet->angle);
+        DrawObject(bullet->coordinate, bullet->model, bullet->angle, bullet->model->sizePixel);
     }
 
     DrawGUI();
 }
-
+// **********************************************************************
+//  bool IsColliding(Object* obj1, Object* obj2)
+// Verifica a colisão entre dois objetos
+// **********************************************************************
 bool IsColliding(Object* obj1, Object* obj2)
 {
     if((obj2->coordinate->x + obj2->width) < obj1->coordinate->x) return false;
@@ -264,26 +270,38 @@ bool IsColliding(Object* obj1, Object* obj2)
     if((obj2->coordinate->y - obj2->height) > obj1->coordinate->y) return false;
     return true;
 }
-
+// **********************************************************************
+//  void InitializeVariables()
+// Inicia as variaveis do jogo e instancia as naves inimigas
+// **********************************************************************
 void InitializeVariables()
 {
     //Inicia variaveis do ambiente
     state = INGAME;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 5;
+    ENEMYAMOUNT = 9-5;
 
     //Inicia a nave do jogador
     player = new PlayerShip(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModel);
 
     srand(rand()%1000);
 
+    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(0), WIDTHSCREEN, HEIGHTSCREEN));
+    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(1), WIDTHSCREEN, HEIGHTSCREEN));
+    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(2), WIDTHSCREEN, HEIGHTSCREEN));
+    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(3), WIDTHSCREEN, HEIGHTSCREEN));
+    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(4), WIDTHSCREEN, HEIGHTSCREEN));
     for(int i=0; i<ENEMYAMOUNT; i++)
     {
-        enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(rand()%modelsList.size()), WIDTHSCREEN, HEIGHTSCREEN));
+        enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(rand()%ENEMYMODELS), WIDTHSCREEN, HEIGHTSCREEN));
     }
 }
-
+// **********************************************************************
+//  void LoadColorsList()
+// Carrega as cores do arquivo "colors.txt" que serão utilizadas nas
+// naves
+// **********************************************************************
 void LoadColorsList()
 {
     ifstream file;
@@ -310,7 +328,10 @@ void LoadColorsList()
 
     file.close();
 }
-
+// **********************************************************************
+//  void GameOver()
+// Desenha a tela de Game Over
+// **********************************************************************
 void GameOver()
 {
     //printf("GAME OVER!!!\n");
@@ -339,7 +360,10 @@ void GameOver()
 
     //exit(0);
 }
-
+// **********************************************************************
+//  void LoadModel(ObjectModel* _modelObj, char fileName[])
+// Método auxiliar para carregar os objetos modelo
+// **********************************************************************
 void LoadModel(ObjectModel* _modelObj, char fileName[])
 {
     int x,y,line,column;
@@ -371,19 +395,21 @@ void LoadModel(ObjectModel* _modelObj, char fileName[])
     fprintf(stderr,"%s carregado com sucesso!\n", fileName);
     file.close();
 }
-
-//https://www.quora.com/How-do-I-open-files-using-an-array-in-C
+// **********************************************************************
+//  void LoadModelsObjects()
+// Carrega os modelos dos arquivos "EShip(n).txt","PShip.txt" e "Bullet.txt"
+// **********************************************************************
 void LoadModelsObjects()
 {
     ifstream file;
     char fileName[1024];
     int x,y,line,column;
-    int enemyshipModels = ENEMYMODELS;
     ObjectModel* modelObj;
 
-    while(enemyshipModels)
+    //Carrega todos os modelos das naves inimigas
+    for(int currentEShip=1; currentEShip<=ENEMYMODELS; currentEShip++)
     {
-        sprintf(fileName,"EShip%d.txt",enemyshipModels);
+        sprintf(fileName,"EShip%d.txt",currentEShip);
         file.open(fileName);
 
         if(!file)
@@ -410,10 +436,10 @@ void LoadModelsObjects()
         modelsList.push_back(modelObj);
 
         fprintf(stderr,"%s carregado com sucesso!\n", fileName);
-        enemyshipModels--;
         file.close();
     }
 
+    //Carrega o modelo da nave do jogador
     file.open("PShip.txt");
     if(!file)
     {
@@ -437,6 +463,7 @@ void LoadModelsObjects()
     file.close();
     printf("PlayerShip carregado com sucesso!\n");
 
+    //carrega modelo da bala de disparo
     file.open("Bullet.txt");
 
     if(!file)
@@ -472,9 +499,11 @@ void LoadModelsObjects()
         printf("\n");
     }
 */
-
 }
-
+// **********************************************************************
+//  void DrawGUI()
+// Desenha a interface do jogo
+// **********************************************************************
 void DrawGUI()
 {
     glColor3f(1.0,0.0,0.0);
@@ -497,8 +526,21 @@ void DrawGUI()
         DrawSquare(x,y,x+10,y+10);
         y-=15;
     }
-}
 
+    EnemyShip* enemy;
+    x = WIDTHSCREEN - 10;
+    y = 10;
+    for(i=0; i<enemysList.size(); i++)
+    {
+        enemy = enemysList.at(i);
+        DrawObject(new Position(x,y),enemy->model, 0, 2);
+        x -= 30;
+    }
+}
+// **********************************************************************
+//  void DrawSquare(int _ix, int _iy, int _fx, int _fy)
+// Método auxiliar que desenha um quadrado
+// **********************************************************************
 void DrawSquare(int _ix, int _iy, int _fx, int _fy)
 {
     glBegin(GL_QUADS);
@@ -510,15 +552,17 @@ void DrawSquare(int _ix, int _iy, int _fx, int _fy)
     }
     glEnd();
 }
-
-void DrawObject(Position* _pos, ObjectModel* _model, float _angle)
+// **********************************************************************
+//  void void DrawObject(Position* _pos, ObjectModel* _model, float _angle, float _sizeCell)
+// Desenha um objeto especifico
+// **********************************************************************
+void DrawObject(Position* _pos, ObjectModel* _model, float _angle, float _sizeCell)
 {
     int nextX, nextY;
-    int sizeCell = _model->sizePixel;
     int y = _model->model.size();
     int x = _model->model.at(0).size();
-    int currentX = -(x/2) * sizeCell;
-    int currentY = -(y/2) * sizeCell;
+    int currentX = -(x/2) * _sizeCell;
+    int currentY = -(y/2) * _sizeCell;
     ColorRGB* color;
     vector<int> temp;
 
@@ -530,24 +574,30 @@ void DrawObject(Position* _pos, ObjectModel* _model, float _angle)
         for(int line=y-1; line>=0; line--)
         {
             temp = _model->model.at(line);
-            nextY = currentY + sizeCell;
+            nextY = currentY + _sizeCell;
 
             for(int column=0; column<x; column++)
             {
-                nextX = currentX + sizeCell;
-                color = colorsList.at(temp.at(column));
-                glColor3f(color->r,color->g,color->b);
-                DrawSquare(currentX,currentY,nextX,nextY);
+                nextX = currentX + _sizeCell;
+                if(temp.at(column))
+                {
+                    color = colorsList.at(temp.at(column));
+                    glColor3f(color->r,color->g,color->b);
+                    DrawSquare(currentX,currentY,nextX,nextY);
+                }
                 currentX = nextX;
             }
             currentY = nextY;
-            currentX = -(x/2) * sizeCell;
+            currentX = -(x/2) * _sizeCell;
             nextX = 0;
         }
     }
     glPopMatrix();
 }
-
+// **********************************************************************
+//  void ClearObjects()
+// Remove do jogo qualquer objeto que tenha o atributo "inGame" como false
+// **********************************************************************
 void ClearObjects()
 {
     int i;
@@ -568,7 +618,10 @@ void ClearObjects()
         }
     }
 }
-
+// **********************************************************************
+//  void Process()
+// Processa todas as ações do objetos presentes no jogo
+// **********************************************************************
 void Process()
 {
     if(!player->inGame)
