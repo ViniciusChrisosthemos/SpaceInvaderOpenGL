@@ -28,8 +28,8 @@
 #include <EnemyShip.h>
 #include <PlayerShip.h>
 #include <ObjectModel.h>
-#include <Point.h>
-
+#include <Position.h>
+#include <ColorRGB.h>
 
 using namespace std;
 
@@ -60,6 +60,7 @@ int ENEMYAMOUNT;
 int ENEMYMODELS = 5;
 vector<ObjectModel*> modelsList;
 vector<EnemyShip*> enemysList;
+vector<ColorRGB*> colorsList;
 ObjectModel* playerModel;
 ObjectModel* bulletModel;
 PlayerShip* player;
@@ -74,16 +75,16 @@ void keyboard ( unsigned char key, int x, int y );
 void arrow_keys ( int a_keys, int x, int y );
 
 // Métodos do Jogo
-void DrawObject(Point* pos, ObjectModel* _model, float _angle);
+void DrawObject(Position* pos, ObjectModel* _model, float _angle);
 void DrawSquare(int _ix, int _iy, int _fx, int _fy);
-void LoadColorsMatriz();
+void LoadColorsList();
 void LoadModelsObjects();
 void InitializeVariables();
 void Process();
 void Draw();
 bool IsColliding(Object* obj1, Object* obj2);
 void GameOver();
-
+void DrawGUI();
 
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
@@ -128,8 +129,8 @@ void animate()
 // **********************************************************************
 void init(void)
 {
-	// Define a cor do fundo da tela (AZUL)
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+	// Define a cor do fundo da tela (PRETO)
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 }
 
@@ -251,6 +252,8 @@ void Draw()
         bullet = player->bullets.at(i);
         DrawObject(bullet->coordinate, bullet->model, bullet->angle);
     }
+
+    DrawGUI();
 }
 
 bool IsColliding(Object* obj1, Object* obj2)
@@ -268,10 +271,10 @@ void InitializeVariables()
     state = INGAME;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 1;
+    ENEMYAMOUNT = 5;
 
     //Inicia a nave do jogador
-    player = new PlayerShip(new Point(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModel);
+    player = new PlayerShip(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModel);
 
     srand(rand()%1000);
 
@@ -281,10 +284,11 @@ void InitializeVariables()
     }
 }
 
-void LoadColorsMatriz()
+void LoadColorsList()
 {
     ifstream file;
-    int currentInt,i,temp;
+    int temp;
+    float r,g,b;
 
     file.open("colors.txt");
 
@@ -295,15 +299,13 @@ void LoadColorsMatriz()
     }
 
     file >> temp;
-    int colorMatriz[temp][3];
 
-    while(file >> currentInt)
+    while(file >> temp)
     {
-        for(i=0; i<3; i++)
-        {
-            file >> temp;
-            colorMatriz[currentInt-1][i] = temp;
-        }
+        file >> r;
+        file >> g;
+        file >> b;
+        colorsList.push_back(new ColorRGB(r/255,g/255,b/255));
     }
 
     file.close();
@@ -311,8 +313,63 @@ void LoadColorsMatriz()
 
 void GameOver()
 {
-    printf("GAME OVER!!!\n");
-    exit(0);
+    //printf("GAME OVER!!!\n");
+    glPushMatrix();
+    {
+        glTranslated(400,300,0);
+        glBegin(GL_LINES);
+        {
+            glVertex2d(0,0);
+            glVertex2d(40,0);
+            glVertex2d(40,25);
+            glVertex2d(25,25);
+            glVertex2d(25,20);
+            glVertex2d(35,20);
+            glVertex2d(35,10);
+            glVertex2d(10,10);
+            glVertex2d(10,40);
+            glVertex2d(40,40);
+            glVertex2d(40,50);
+            glVertex2d(0,50);
+            glVertex2d(0,0);
+        }
+        glEnd();
+    }
+    glPopMatrix();
+
+    //exit(0);
+}
+
+void LoadModel(ObjectModel* _modelObj, char fileName[])
+{
+    int x,y,line,column;
+    ifstream file;
+
+    file.open(fileName);
+    if(!file)
+    {
+        fprintf(stderr,"%s nao encontrado!\n", fileName);
+        return;
+    }
+
+    file >> y;
+    file >> x;
+
+    _modelObj = new ObjectModel();
+    file >> _modelObj->sizePixel;
+
+    for(line=0; line < y; line++)
+    {
+        vector<int> temp(x);
+        for(column=0; column < x; column++)
+        {
+            file >> temp.at(column);
+        }
+        _modelObj->model.push_back(temp);
+    }
+
+    fprintf(stderr,"%s carregado com sucesso!\n", fileName);
+    file.close();
 }
 
 //https://www.quora.com/How-do-I-open-files-using-an-array-in-C
@@ -358,28 +415,28 @@ void LoadModelsObjects()
     }
 
     file.open("PShip.txt");
-    printf("Abre pship.txt\n");
-
     if(!file)
     {
         printf("Erro ao carregar o model do jogador!\n");
         return;
     }
 
-    file >> y;
     file >> x;
+    file >> y;
     playerModel = new ObjectModel();
     file >> playerModel->sizePixel;
-    for(line=0; line<y; line++)
+    for(line=0; line<x; line++)
     {
-        vector<int> temp(x);
-        for(column=0; column<x; column++)
+        vector<int> temp(y);
+        for(column=0; column<y; column++)
         {
             file >> temp.at(column);
         }
         playerModel->model.push_back(temp);
     }
     file.close();
+    printf("PlayerShip carregado com sucesso!\n");
+
     file.open("Bullet.txt");
 
     if(!file)
@@ -401,6 +458,10 @@ void LoadModelsObjects()
         }
         bulletModel->model.push_back(temp);
     }
+
+    file.close();
+
+    printf("Bullet carregado com sucesso!\n");
 /*
     for(int i=0; i<playerModel->model.size(); i++)
     {
@@ -411,8 +472,31 @@ void LoadModelsObjects()
         printf("\n");
     }
 */
-    file.close();
-    printf("Load player model\n");
+
+}
+
+void DrawGUI()
+{
+    glColor3f(1.0,0.0,0.0);
+
+    int x=20, y=550, i, bulletCount;
+    for(i=0; i<player->health; i++)
+    {
+        DrawSquare(x,y,x+10,y+30);
+        x+=15;
+    }
+
+    x = 20;
+    y = 500;
+    bulletCount = 10 - player->bullets.size();
+
+    glColor3f(1.0,1.0,1.0);
+
+    for(i=0; i<bulletCount; i++)
+    {
+        DrawSquare(x,y,x+10,y+10);
+        y-=15;
+    }
 }
 
 void DrawSquare(int _ix, int _iy, int _fx, int _fy)
@@ -427,21 +511,22 @@ void DrawSquare(int _ix, int _iy, int _fx, int _fy)
     glEnd();
 }
 
-void DrawObject(Point* _pos, ObjectModel* _model, float _angle)
+void DrawObject(Position* _pos, ObjectModel* _model, float _angle)
 {
-    int sizeCell = _model->sizePixel;
     int nextX, nextY;
+    int sizeCell = _model->sizePixel;
     int y = _model->model.size();
     int x = _model->model.at(0).size();
     int currentX = -(x/2) * sizeCell;
     int currentY = -(y/2) * sizeCell;
-
+    ColorRGB* color;
     vector<int> temp;
 
     glPushMatrix();
     {
         glTranslatef(_pos->x,_pos->y,0);
         glRotated(_angle,0,0,1);
+
         for(int line=y-1; line>=0; line--)
         {
             temp = _model->model.at(line);
@@ -450,10 +535,9 @@ void DrawObject(Point* _pos, ObjectModel* _model, float _angle)
             for(int column=0; column<x; column++)
             {
                 nextX = currentX + sizeCell;
-                if(temp.at(column) != 0)
-                {
-                    DrawSquare(currentX,currentY,nextX,nextY);
-                }
+                color = colorsList.at(temp.at(column));
+                glColor3f(color->r,color->g,color->b);
+                DrawSquare(currentX,currentY,nextX,nextY);
                 currentX = nextX;
             }
             currentY = nextY;
@@ -538,7 +622,7 @@ void Process()
 int  main ( int argc, char** argv )
 {
 
-    LoadColorsMatriz();
+    LoadColorsList();
     printf("Carrega cores\n");
     LoadModelsObjects();
     printf("Carrega modelos\n");

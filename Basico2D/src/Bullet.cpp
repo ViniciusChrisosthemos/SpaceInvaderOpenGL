@@ -1,8 +1,8 @@
 #include "Bullet.h"
-#include "Point.h"
+#include "Position.h"
 #include "math.h"
 
-Bullet::Bullet(Point* _coord, float _angle, float _limitX, float _limitY, ObjectModel* _model):
+Bullet::Bullet(Position* _coord, float _angle, float _limitX, float _limitY, ObjectModel* _model):
     Object(_coord, _angle, 10, _model)
 {
     limitX = _limitX;

@@ -1,21 +1,21 @@
 #ifndef ENEMYSHIP_H
 #define ENEMYSHIP_H
-#include "Point.h"
+#include "Position.h"
 #include "Object.h"
 #include <ObjectModel.h>
 
 class EnemyShip : public Object
 {
     public:
-        Point *p0;
-        Point *p1;
-        Point *p2;
-        Point *p3;
-        Point *target;
+        Position *p0;
+        Position *p1;
+        Position *p2;
+        Position *p3;
+        Position *target;
         int xLimit,yLimit;
         float t;
 
-        EnemyShip(Point *_target, ObjectModel* _model, int _xLimit, int _yLimit);
+        EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit);
         virtual ~EnemyShip();
         void MoveEShip();
 

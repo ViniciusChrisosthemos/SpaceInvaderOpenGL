@@ -12,7 +12,7 @@ class Bullet : public Object
         float alfaX;
         float alfaY;
 
-        Bullet(Point* _coord, float _angle, float _limitX, float _limitY, ObjectModel* _model);
+        Bullet(Position* _coord, float _angle, float _limitX, float _limitY, ObjectModel* _model);
         virtual ~Bullet();
         void MoveBullet();
 

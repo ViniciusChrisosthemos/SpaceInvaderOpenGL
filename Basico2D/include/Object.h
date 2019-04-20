@@ -1,6 +1,6 @@
 #ifndef OBJECT_H
 #define OBJECT_H
-#include <Point.h>
+#include <Position.h>
 #include <ObjectModel.h>
 
 class Object
@@ -10,11 +10,11 @@ class Object
         float speed;
         int width;
         int height;
-        Point *coordinate;
+        Position *coordinate;
         ObjectModel* model;
         bool inGame;
 
-        Object(Point* _coordinate, float _angle, float _speed, ObjectModel* _model);
+        Object(Position* _coordinate, float _angle, float _speed, ObjectModel* _model);
         virtual ~Object();
 
     protected:

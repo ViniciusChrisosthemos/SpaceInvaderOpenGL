@@ -1,6 +1,6 @@
 #include "Object.h"
 
-Object::Object(Point* _coordinate, float _angle, float _speed, ObjectModel* _model)
+Object::Object(Position* _coordinate, float _angle, float _speed, ObjectModel* _model)
 {
     coordinate = _coordinate;
     angle = _angle;

@@ -2,14 +2,14 @@
 #define POINT_H
 
 
-class Point
+class Position
 {
     public:
         float x;
         float y;
 
-        Point(float _x, float _y);
-        virtual ~Point();
+        Position(float _x, float _y);
+        virtual ~Position();
 
     protected:
 

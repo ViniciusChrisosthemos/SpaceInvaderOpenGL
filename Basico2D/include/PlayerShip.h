@@ -12,7 +12,7 @@ class PlayerShip : public Object
         ObjectModel* bulletModel;
         int health;
 
-        PlayerShip(Point* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel);
+        PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel);
         virtual ~PlayerShip();
 
         void MoveShip(int minX,int maxX,int minY,int maxY);

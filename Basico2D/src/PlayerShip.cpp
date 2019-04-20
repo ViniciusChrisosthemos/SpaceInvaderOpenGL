@@ -1,5 +1,5 @@
 #include <PlayerShip.h>
-#include <Point.h>
+#include <Position.h>
 #include <math.h>
 #include <Bullet.h>
 #include <Object.h>
@@ -7,7 +7,7 @@
 #include <vector>
 #include <ObjectModel.h>
 
-PlayerShip::PlayerShip(Point* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel) :
+PlayerShip::PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel) :
     Object(_initialPosition, 0, 0, _model)
 {
     health = 3;
@@ -43,7 +43,7 @@ void PlayerShip::Shoot(int widthScreen, int heightScreen)
 {
     if(bullets.size() <= 10)
     {
-        Bullet* bullet = new Bullet(new Point(coordinate->x,coordinate->y),angle,widthScreen,heightScreen, bulletModel);
+        Bullet* bullet = new Bullet(new Position(coordinate->x,coordinate->y),angle,widthScreen,heightScreen, bulletModel);
         bullets.push_back(bullet);
     }
 }
