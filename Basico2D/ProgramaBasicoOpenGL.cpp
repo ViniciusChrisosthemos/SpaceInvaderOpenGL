@@ -23,14 +23,12 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <stdlib.h>
 #include <vector>
 #include <EnemyShip.h>
 #include <PlayerShip.h>
 #include <ObjectModel.h>
 #include <Position.h>
 #include <ColorRGB.h>
-#include <conio.h>
 using namespace std;
 
 #ifdef WIN32
@@ -57,12 +55,13 @@ State state;
 int WIDTHSCREEN;
 int HEIGHTSCREEN;
 int ENEMYAMOUNT;
-int ENEMYMODELS = 5;
-vector<ObjectModel*> modelsList;
+int ENEMYMODELS;
+int BULLETMODELS;
+vector<ObjectModel*> enemysModels;
+vector<ObjectModel*> bulletModels;
 vector<EnemyShip*> enemysList;
 vector<ColorRGB*> colorsList;
 ObjectModel* playerModel;
-ObjectModel* bulletModel;
 ObjectModel* heartModel;
 PlayerShip* player;
 
@@ -77,7 +76,7 @@ void arrow_keys ( int a_keys, int x, int y );
 
 // Métodos do Jogo
 void DrawObject(Position* pos, ObjectModel* _model, float _angle, float _sizeCell);
-void DrawSquare(int _ix, int _iy, int _fx, int _fy);
+void DrawRectangle(int _ix, int _iy, int _fx, int _fy);
 void LoadColorsList();
 void LoadModelsObjects();
 void InitializeVariables();
@@ -227,16 +226,22 @@ void arrow_keys ( int a_keys, int x, int y )
 // **********************************************************************
 void Draw()
 {
-    int i;
+    int i,j;
     DrawObject(player->coordinate, player->model,player->angle-90, player->model->sizePixel);
 
-    EnemyShip* temp;
+    EnemyShip* enemy;
+    Bullet* bullet;
     for(i=0; i<enemysList.size(); i++)
     {
-        temp = enemysList.at(i);
-        DrawObject(temp->coordinate, temp->model, temp->angle, temp->model->sizePixel);
+        enemy = enemysList.at(i);
+        DrawObject(enemy->coordinate, enemy->model, enemy->angle, enemy->model->sizePixel);
+        for(j=0; j<enemy->bullets.size(); j++)
+        {
+            bullet = enemy->bullets.at(j);
+            DrawObject(bullet->coordinate, bullet->model, bullet->angle, bullet->model->sizePixel);
+        }
     }
-    Bullet* bullet;
+
     for(i=0; i<player->bullets.size(); i++)
     {
         bullet = player->bullets.at(i);
@@ -289,24 +294,25 @@ void InitializeVariables()
     state = INGAME;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 15-5;
+    ENEMYAMOUNT = 5;
+    ENEMYMODELS = 5;
+    BULLETMODELS = 4;
 
     LoadColorsList();
     LoadModelsObjects();
 
     //Inicia a nave do jogador
-    player = new PlayerShip(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModel);
+    player = new PlayerShip(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModels.at(rand()%BULLETMODELS));
 
-    srand(rand()%1000);
-
-    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(0), WIDTHSCREEN, HEIGHTSCREEN));
-    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(1), WIDTHSCREEN, HEIGHTSCREEN));
-    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(2), WIDTHSCREEN, HEIGHTSCREEN));
-    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(3), WIDTHSCREEN, HEIGHTSCREEN));
-    enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(4), WIDTHSCREEN, HEIGHTSCREEN));
+    //Naves inimigas obrigatorias
+    for(int i=0; i<ENEMYMODELS; i++)
+    {
+        enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS)));
+    }
+    //Naves randomizadas
     for(int i=0; i<ENEMYAMOUNT; i++)
     {
-        enemysList.push_back(new EnemyShip(player->coordinate, modelsList.at(rand()%ENEMYMODELS), WIDTHSCREEN, HEIGHTSCREEN));
+        enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(rand()%ENEMYMODELS), WIDTHSCREEN, HEIGHTSCREEN, bulletModels.at(rand()%BULLETMODELS)));
     }
 }
 // **********************************************************************
@@ -413,18 +419,25 @@ void LoadModelsObjects()
 {
     char fileName[1024];
     ObjectModel* enemyModel;
+    ObjectModel* bulletModel;
     //Carrega todos os modelos das naves inimigas
     for(int currentEShip=1; currentEShip<=ENEMYMODELS; currentEShip++)
     {
         sprintf(fileName,"EShip%d.txt",currentEShip);
         enemyModel = new ObjectModel();
         LoadModel(enemyModel,fileName);
-        modelsList.push_back(enemyModel);
+        enemysModels.push_back(enemyModel);
+    }
+    //Carrega todos os modelos de disparos
+    for(int currentBullet=1; currentBullet<=BULLETMODELS; currentBullet++)
+    {
+        sprintf(fileName,"Bullet%d.txt",currentBullet);
+        bulletModel = new ObjectModel();
+        LoadModel(bulletModel,fileName);
+        bulletModels.push_back(bulletModel);
     }
     playerModel = new ObjectModel();
     LoadModel(playerModel, "PShip.txt");
-    bulletModel = new ObjectModel();
-    LoadModel(bulletModel, "Bullet.txt");
     heartModel = new ObjectModel();
     LoadModel(heartModel, "Heart.txt");
 }
@@ -450,7 +463,7 @@ void DrawGUI()
     //Desenha as balas disponiveis do jogador
     for(i=0; i<bulletCount; i++)
     {
-        DrawSquare(x,y,x+10,y+10);
+        DrawRectangle(x,y,x+10,y+10);
         y-=15;
     }
 
@@ -466,10 +479,10 @@ void DrawGUI()
     }
 }
 // **********************************************************************
-//  void DrawSquare(int _ix, int _iy, int _fx, int _fy)
+//  void DrawRectangle(int _ix, int _iy, int _fx, int _fy)
 // Método auxiliar que desenha um quadrado
 // **********************************************************************
-void DrawSquare(int _ix, int _iy, int _fx, int _fy)
+void DrawRectangle(int _ix, int _iy, int _fx, int _fy)
 {
     glBegin(GL_QUADS);
     {
@@ -511,7 +524,7 @@ void DrawObject(Position* _pos, ObjectModel* _model, float _angle, float _sizeCe
                 {
                     color = colorsList.at(temp.at(column));
                     glColor3f(color->r,color->g,color->b);
-                    DrawSquare(currentX,currentY,nextX,nextY);
+                    DrawRectangle(currentX,currentY,nextX,nextY);
                 }
                 currentX = nextX;
             }
@@ -522,22 +535,29 @@ void DrawObject(Position* _pos, ObjectModel* _model, float _angle, float _sizeCe
     }
     glPopMatrix();
 }
+
 // **********************************************************************
 //  void ClearObjects()
 // Remove do jogo qualquer objeto que tenha o atributo "inGame" como false
 // **********************************************************************
 void ClearObjects()
 {
-    int i;
+    int i,j;
+    EnemyShip* enemy;
     //Verifica se alguma nave inimiga não está mais no jogo
     for(i=0; i<enemysList.size(); i++)
     {
-        if(!enemysList.at(i)->inGame) enemysList.erase(enemysList.begin()+i);
+        enemy = enemysList.at(i);
+        if(!enemy->inGame) enemysList.erase(enemysList.begin()+i);
+
+        for(j=0; j<enemy->bullets.size(); j++)
+        {
+            if(!enemy->bullets.at(j)->inGame) enemy->bullets.erase(enemy->bullets.begin()+j);
+        }
     }
     //Verifica sem algum disparo não está mais no jogo
     for(i=0; i<player->bullets.size(); i++)
     {
-
         if(!player->bullets.at(i)->inGame) player->bullets.erase(player->bullets.begin()+i);
     }
 }
@@ -557,24 +577,38 @@ void Process()
 
     VerifyUserActions();
 
-    //Move todas as naves inimigas
+    //Move todas as naves inimigas e seus disparos
     EnemyShip* enemy;
+    Bullet* bullet;
     for(int i=0; i<enemysList.size(); i++)
     {
         enemy = enemysList.at(i);
         enemy->MoveEShip();
 
-        //Verifica colisão com o player
+        for(int j=0; j<enemy->bullets.size(); j++)
+        {
+            bullet = enemy->bullets.at(j);
+            bullet->MoveBullet();
+            //Verifica colisão do disparo inimigo com o player
+            if(IsColliding(player,bullet))
+            {
+                player->TakeDamage();
+                bullet->inGame = false;
+                return;
+            }
+        }
+        //Verifica colisão da nave com o player
         if(IsColliding(player,enemy))
         {
             player->TakeDamage();
             enemy->inGame = false;
             return;
         }
+        //Faz a nave inimiga disparar, caso seja possivel
+        if(enemy->CanShoot()) enemy->Shoot();
     }
 
     //Move todas as balas disparadas pelo player
-    Bullet* bullet;
     for(int i=0; i<player->bullets.size(); i++)
     {
         bullet = player->bullets.at(i);

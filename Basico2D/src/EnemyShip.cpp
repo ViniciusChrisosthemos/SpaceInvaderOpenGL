@@ -10,13 +10,20 @@
 // EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit): Object(new Position(0,0), 0, 0.004, _model)
 // Construtor da Classe EnemyShip
 // **********************************************************************
-EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit) :
+EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit, ObjectModel* _bulletModel) :
     Object(new Position(0,0), 0, 0, _model)
 {
-        srand(rand()%1000);
         target = _target;
         xLimit = _xLimit;
         yLimit = _yLimit;
+        bulletModel = _bulletModel;
+
+        srand(rand()%1000);
+        fireRate = rand()%4 + 1;
+
+        time(NULL);
+        time(&currentTime);
+        nextShoot = currentTime + fireRate;
 
         switch(rand()%4)
         {
@@ -58,11 +65,11 @@ EnemyShip::~EnemyShip()
 void EnemyShip::MoveEShip()
 {
     float aux = 1-t;
-
     coordinate->x = pow(aux,3)*p0->x + 3*t*pow(aux,2)*p1->x + 3*t*t*aux*p2->x + t*t*t*p3->x;
     coordinate->y = pow(aux,3)*p0->y + 3*t*pow(aux,2)*p1->y + 3*t*t*aux*p2->y + t*t*t*p3->y;
-
     t += speed;
+
+    LookToTarget();
 
     if(t > 1)
     {
@@ -71,7 +78,38 @@ void EnemyShip::MoveEShip()
         p1 = new Position(p3->x*2.0 - p2->x,p3->y*2.0 - p2->y);
         p2 = new Position(rand()%xLimit,rand()%yLimit);
         p3 = new Position(target->x,target->y);
-        //p3 = new Position(rand()%xLimit,rand()%yLimit);
-        //printf("P2(%f,%f),P1(%f,%f),P2(%f,%f),P3(%f,%f)\n",p0->x,p0->y,p1->x,p1->y,p2->x,p2->y,p3->x,p3->y);
     };
+}
+// **********************************************************************
+// void LookToTarget()
+// Define o angulo da nave em relação ao seu target(nave do jogador)
+// **********************************************************************
+void EnemyShip::LookToTarget()
+{
+    Position v1 = Position(target->x - coordinate->x, target->y - coordinate->y);
+    Position v2 = Position(800 - coordinate->x, 0);
+
+    float scaleProduct = v1.x*v2.x + v1.y*v2.y;
+    float module = sqrt(v1.x*v1.x + v1.y*v1.y)*sqrt(v2.x*v2.x + v2.y*v2.y);
+    float newAngle = acos(scaleProduct/module) * (180/M_PI);
+
+    angle = (target->y < coordinate->y) ? (-newAngle - 0):(newAngle - 0);
+}
+
+void EnemyShip::Shoot()
+{
+    Bullet* bullet = new Bullet(new Position(coordinate->x,coordinate->y),angle,xLimit,yLimit, bulletModel);
+    bullets.push_back(bullet);
+}
+
+bool EnemyShip::CanShoot()
+{
+    time(&currentTime);
+
+    if(currentTime >= nextShoot)
+    {
+        nextShoot = currentTime + fireRate;
+        return true;
+    }
+    return false;
 }
