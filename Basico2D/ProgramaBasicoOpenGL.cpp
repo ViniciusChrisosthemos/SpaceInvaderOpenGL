@@ -30,7 +30,7 @@
 #include <ObjectModel.h>
 #include <Position.h>
 #include <ColorRGB.h>
-
+#include <conio.h>
 using namespace std;
 
 #ifdef WIN32
@@ -63,6 +63,7 @@ vector<EnemyShip*> enemysList;
 vector<ColorRGB*> colorsList;
 ObjectModel* playerModel;
 ObjectModel* bulletModel;
+ObjectModel* heartModel;
 PlayerShip* player;
 
 
@@ -85,7 +86,7 @@ void Draw();
 bool IsColliding(Object* obj1, Object* obj2);
 void GameOver();
 void DrawGUI();
-
+void VerifyUserActions();
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
 // **********************************************************************
@@ -193,23 +194,9 @@ void keyboard ( unsigned char key, int x, int y )
 		case 27:        // Termina o programa qdo
 			exit ( 0 );   // a tecla ESC for pressionada
 			break;
-        //Move a nave do jogador
-        case 'w':
-            player->MoveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
-            break;
-        //Rotaciona a nave para a esquerda
-        case 'a':
-            player->Rotate(false);
-            break;
-        //Rotaciona a nave para a direita
-        case 'd':
-            player->Rotate(true);
-            break;
-        //Atira com a nave
         case ' ':
             player->Shoot(WIDTHSCREEN,HEIGHTSCREEN);
             break;
-
 		default:
 			break;
 	}
@@ -259,6 +246,28 @@ void Draw()
     DrawGUI();
 }
 // **********************************************************************
+//  void VerifyUserActions()
+// Verifica quais ações o jogado quer realizar com a nave
+// **********************************************************************
+void VerifyUserActions()
+{
+    if(GetKeyState('W') & 0x8000)
+    {
+        player->MoveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
+    }
+
+    if(GetKeyState('A') & 0x8000)
+    {
+        player->Rotate(false);
+    }
+
+    if(GetKeyState('D') & 0x8000)
+    {
+        player->Rotate(true);
+    }
+}
+
+// **********************************************************************
 //  bool IsColliding(Object* obj1, Object* obj2)
 // Verifica a colisão entre dois objetos
 // **********************************************************************
@@ -280,7 +289,10 @@ void InitializeVariables()
     state = INGAME;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 9-5;
+    ENEMYAMOUNT = 15-5;
+
+    LoadColorsList();
+    LoadModelsObjects();
 
     //Inicia a nave do jogador
     player = new PlayerShip(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModel);
@@ -378,8 +390,6 @@ void LoadModel(ObjectModel* _modelObj, char fileName[])
 
     file >> y;
     file >> x;
-
-    _modelObj = new ObjectModel();
     file >> _modelObj->sizePixel;
 
     for(line=0; line < y; line++)
@@ -397,108 +407,26 @@ void LoadModel(ObjectModel* _modelObj, char fileName[])
 }
 // **********************************************************************
 //  void LoadModelsObjects()
-// Carrega os modelos dos arquivos "EShip(n).txt","PShip.txt" e "Bullet.txt"
+// Carrega os modelos dos arquivos txt
 // **********************************************************************
 void LoadModelsObjects()
 {
-    ifstream file;
     char fileName[1024];
-    int x,y,line,column;
-    ObjectModel* modelObj;
-
+    ObjectModel* enemyModel;
     //Carrega todos os modelos das naves inimigas
     for(int currentEShip=1; currentEShip<=ENEMYMODELS; currentEShip++)
     {
         sprintf(fileName,"EShip%d.txt",currentEShip);
-        file.open(fileName);
-
-        if(!file)
-        {
-            fprintf(stderr,"%s nao encontrado!\n", fileName);
-            return;
-        }
-
-        file >> y;
-        file >> x;
-
-        modelObj = new ObjectModel();
-        file >> modelObj->sizePixel;
-        for(line=0; line < y; line++)
-        {
-            vector<int> temp(x);
-            for(column=0; column < x; column++)
-            {
-                file >> temp.at(column);
-            }
-            modelObj->model.push_back(temp);
-        }
-
-        modelsList.push_back(modelObj);
-
-        fprintf(stderr,"%s carregado com sucesso!\n", fileName);
-        file.close();
+        enemyModel = new ObjectModel();
+        LoadModel(enemyModel,fileName);
+        modelsList.push_back(enemyModel);
     }
-
-    //Carrega o modelo da nave do jogador
-    file.open("PShip.txt");
-    if(!file)
-    {
-        printf("Erro ao carregar o model do jogador!\n");
-        return;
-    }
-
-    file >> x;
-    file >> y;
     playerModel = new ObjectModel();
-    file >> playerModel->sizePixel;
-    for(line=0; line<x; line++)
-    {
-        vector<int> temp(y);
-        for(column=0; column<y; column++)
-        {
-            file >> temp.at(column);
-        }
-        playerModel->model.push_back(temp);
-    }
-    file.close();
-    printf("PlayerShip carregado com sucesso!\n");
-
-    //carrega modelo da bala de disparo
-    file.open("Bullet.txt");
-
-    if(!file)
-    {
-        printf("Erro ao carregar o modelo do disparo!\n");
-        return;
-    }
-
-    file >> y;
-    file >> x;
+    LoadModel(playerModel, "PShip.txt");
     bulletModel = new ObjectModel();
-    file >> bulletModel->sizePixel;
-    for(line=0; line<y; line++)
-    {
-        vector<int> temp(x);
-        for(column=0; column<x; column++)
-        {
-            file >> temp.at(column);
-        }
-        bulletModel->model.push_back(temp);
-    }
-
-    file.close();
-
-    printf("Bullet carregado com sucesso!\n");
-/*
-    for(int i=0; i<playerModel->model.size(); i++)
-    {
-        for(int j=0; j<playerModel->model.at(i).size(); j++)
-        {
-            printf("%d ",playerModel->model.at(i).at(j));
-        }
-        printf("\n");
-    }
-*/
+    LoadModel(bulletModel, "Bullet.txt");
+    heartModel = new ObjectModel();
+    LoadModel(heartModel, "Heart.txt");
 }
 // **********************************************************************
 //  void DrawGUI()
@@ -507,20 +435,19 @@ void LoadModelsObjects()
 void DrawGUI()
 {
     glColor3f(1.0,0.0,0.0);
-
-    int x=20, y=550, i, bulletCount;
+    int x=20, y=HEIGHTSCREEN-20, i, bulletCount;
+    //Desenha as vidas do player
     for(i=0; i<player->health; i++)
     {
-        DrawSquare(x,y,x+10,y+30);
-        x+=15;
+        DrawObject(new Position(x,y),heartModel,0,heartModel->sizePixel);
+        x+=heartModel->model.at(0).size() * heartModel->sizePixel + 5;
     }
 
-    x = 20;
-    y = 500;
+    x = 15;
+    y = HEIGHTSCREEN - 100;
     bulletCount = 10 - player->bullets.size();
-
     glColor3f(1.0,1.0,1.0);
-
+    //Desenha as balas disponiveis do jogador
     for(i=0; i<bulletCount; i++)
     {
         DrawSquare(x,y,x+10,y+10);
@@ -530,6 +457,7 @@ void DrawGUI()
     EnemyShip* enemy;
     x = WIDTHSCREEN - 10;
     y = 10;
+    //Desenha as naves inimigas que ainda estão vivas
     for(i=0; i<enemysList.size(); i++)
     {
         enemy = enemysList.at(i);
@@ -601,21 +529,16 @@ void DrawObject(Position* _pos, ObjectModel* _model, float _angle, float _sizeCe
 void ClearObjects()
 {
     int i;
+    //Verifica se alguma nave inimiga não está mais no jogo
     for(i=0; i<enemysList.size(); i++)
     {
-        if(!enemysList.at(i)->inGame)
-        {
-            enemysList.erase(enemysList.begin()+i);
-        }
+        if(!enemysList.at(i)->inGame) enemysList.erase(enemysList.begin()+i);
     }
-
+    //Verifica sem algum disparo não está mais no jogo
     for(i=0; i<player->bullets.size(); i++)
     {
 
-        if(!player->bullets.at(i)->inGame)
-        {
-            player->bullets.erase(player->bullets.begin()+i);
-        }
+        if(!player->bullets.at(i)->inGame) player->bullets.erase(player->bullets.begin()+i);
     }
 }
 // **********************************************************************
@@ -632,26 +555,32 @@ void Process()
 
     ClearObjects();
 
+    VerifyUserActions();
+
+    //Move todas as naves inimigas
     EnemyShip* enemy;
     for(int i=0; i<enemysList.size(); i++)
     {
         enemy = enemysList.at(i);
         enemy->MoveEShip();
 
+        //Verifica colisão com o player
         if(IsColliding(player,enemy))
         {
             player->TakeDamage();
             enemy->inGame = false;
+            return;
         }
     }
 
-
+    //Move todas as balas disparadas pelo player
     Bullet* bullet;
     for(int i=0; i<player->bullets.size(); i++)
     {
         bullet = player->bullets.at(i);
         bullet->MoveBullet();
 
+        //Verifica colisão com todas as naves inimigas
         for(int j=0; j<enemysList.size(); j++)
         {
             enemy = enemysList.at(j);
@@ -663,9 +592,6 @@ void Process()
             }
         }
     }
-
-
-
 }
 
 
@@ -674,13 +600,8 @@ void Process()
 // **********************************************************************
 int  main ( int argc, char** argv )
 {
-
-    LoadColorsList();
-    printf("Carrega cores\n");
-    LoadModelsObjects();
-    printf("Carrega modelos\n");
     InitializeVariables();
-    printf("Carrega variaveis\n");
+    printf("Variaveis iniciadas\n");
 
     glutInit            ( &argc, argv );
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB );

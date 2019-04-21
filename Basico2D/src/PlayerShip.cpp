@@ -15,9 +15,7 @@ PlayerShip::PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectMo
 {
     health = 3;
     angle = 0;
-    speed = 5;
-    width = 2;
-    height = 3;
+    speed = 3;
     bulletModel = _bulletModel;
 }
 // **********************************************************************
@@ -48,7 +46,7 @@ void PlayerShip::MoveShip(int minX,int maxX,int minY,int maxY)
 // **********************************************************************
 void PlayerShip::Rotate(bool toRight)
 {
-    angle += (toRight) ? -15:15;
+    angle += (toRight) ? -5:5;
 }
 // **********************************************************************
 // void Shoot(int widthScreen, int heightScreen)

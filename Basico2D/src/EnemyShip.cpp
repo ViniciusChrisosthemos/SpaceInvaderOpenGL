@@ -11,7 +11,7 @@
 // Construtor da Classe EnemyShip
 // **********************************************************************
 EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit) :
-    Object(new Position(0,0), 0, 0.004, _model)
+    Object(new Position(0,0), 0, 0, _model)
 {
         srand(rand()%1000);
         target = _target;
@@ -38,7 +38,9 @@ EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _y
         p1 = new Position(rand()%xLimit,rand()%yLimit);
         p2 = new Position(rand()%xLimit,rand()%yLimit);
         p3 = new Position(target->x,target->y);
-        t = 0.001;
+        t = 0;
+
+        speed = (rand()%3 + 3.0)/1000.0;
     }
 // **********************************************************************
 // ~EnemyShip()

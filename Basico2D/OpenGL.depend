@@ -114,7 +114,7 @@
 
 1554727762 D
 
-1555784560 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
+1555818048 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
 	<iostream>
 	<cmath>
 	<ctime>
@@ -131,6 +131,7 @@
 	<ObjectModel.h>
 	<Position.h>
 	<ColorRGB.h>
+	<conio.h>
 	<windows.h>
 	<glut.h>
 	<sys/time.h>
@@ -204,14 +205,14 @@
 	<PlayerShip.h>
 	<EnemyShip.h>
 
-1555783636 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\object.cpp
+1555792324 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\object.cpp
 	"Object.h"
 
-1555723213 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\object.h
+1555792390 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\object.h
 	<Position.h>
 	<ObjectModel.h>
 
-1555783942 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\playership.cpp
+1555794487 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\playership.cpp
 	<PlayerShip.h>
 	<Position.h>
 	<math.h>
@@ -238,7 +239,7 @@
 	"Object.h"
 	<ObjectModel.h>
 
-1555783643 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\enemyship.cpp
+1555794749 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\enemyship.cpp
 	<EnemyShip.h>
 	<stdlib.h>
 	<time.h>
