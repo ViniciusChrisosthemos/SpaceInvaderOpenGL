@@ -294,7 +294,7 @@ void InitializeVariables()
     state = INGAME;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 5;
+    ENEMYAMOUNT = 20;
     ENEMYMODELS = 5;
     BULLETMODELS = 4;
 
@@ -474,7 +474,7 @@ void DrawGUI()
     for(i=0; i<enemysList.size(); i++)
     {
         enemy = enemysList.at(i);
-        DrawObject(new Position(x,y),enemy->model, 0, 2);
+        DrawObject(new Position(x,y),enemy->model, 90, 2);
         x -= 30;
     }
 }
