@@ -196,6 +196,15 @@ void keyboard ( unsigned char key, int x, int y )
         case ' ':
             player->Shoot(WIDTHSCREEN,HEIGHTSCREEN);
             break;
+        case 'w':
+            player->MoveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
+            break;
+        case 'a':
+            player->Rotate(false);
+            break;
+        case 'd':
+            player->Rotate(true);
+            break;
 		default:
 			break;
 	}
@@ -255,7 +264,7 @@ void Draw()
 // Verifica quais ações o jogado quer realizar com a nave
 // **********************************************************************
 void VerifyUserActions()
-{
+{/*
     if(GetKeyState('W') & 0x8000)
     {
         player->MoveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
@@ -269,7 +278,7 @@ void VerifyUserActions()
     if(GetKeyState('D') & 0x8000)
     {
         player->Rotate(true);
-    }
+    }*/
 }
 
 // **********************************************************************
@@ -294,7 +303,7 @@ void InitializeVariables()
     state = INGAME;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 20;
+    ENEMYAMOUNT = 3;
     ENEMYMODELS = 5;
     BULLETMODELS = 4;
 
@@ -304,15 +313,11 @@ void InitializeVariables()
     //Inicia a nave do jogador
     player = new PlayerShip(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModels.at(rand()%BULLETMODELS));
 
-    //Naves inimigas obrigatorias
-    for(int i=0; i<ENEMYMODELS; i++)
-    {
-        enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS)));
-    }
-    //Naves randomizadas
+    //Naves inimigas obrigatorias e Naves randomizadas
     for(int i=0; i<ENEMYAMOUNT; i++)
     {
-        enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(rand()%ENEMYMODELS), WIDTHSCREEN, HEIGHTSCREEN, bulletModels.at(rand()%BULLETMODELS)));
+        if(i < ENEMYMODELS) enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(i)));
+        else enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS)));
     }
 }
 // **********************************************************************
