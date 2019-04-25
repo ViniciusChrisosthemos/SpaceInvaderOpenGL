@@ -13,9 +13,9 @@
 PlayerShip::PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel) :
     Object(_initialPosition, 0, 0, _model)
 {
-    health = 3;
+    health = 50;
     angle = 0;
-    speed = 3;
+    speed = 40;
     bulletModel = _bulletModel;
 }
 // **********************************************************************
@@ -32,8 +32,8 @@ PlayerShip::~PlayerShip()
 // **********************************************************************
 void PlayerShip::MoveShip(int minX,int maxX,int minY,int maxY)
 {
-    coordinate->x += cos(angle*(M_PI/180)) * speed;
-    coordinate->y += sin(angle*(M_PI/180)) * speed;
+    coordinate->x += (cos(angle*(M_PI/180)) * (speed/60.0));
+    coordinate->y += (sin(angle*(M_PI/180)) * (speed/60.0));
 
     if(coordinate->x < minX) coordinate->x = minX;
     else if(coordinate->x > maxX) coordinate->x = maxX;
@@ -46,7 +46,8 @@ void PlayerShip::MoveShip(int minX,int maxX,int minY,int maxY)
 // **********************************************************************
 void PlayerShip::Rotate(bool toRight)
 {
-    angle += (toRight) ? -5:5;
+    float forceRotation = (30.0/66.0);
+    angle += (toRight) ? -forceRotation:forceRotation;
 }
 // **********************************************************************
 // void Shoot(int widthScreen, int heightScreen)

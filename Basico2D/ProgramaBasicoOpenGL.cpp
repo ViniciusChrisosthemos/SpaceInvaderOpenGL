@@ -52,6 +52,9 @@ enum State{INGAME,GAMEOVER};
 
 // Variáveis Globais
 State state;
+float FPS;
+bool debug;
+int displayCount;
 int WIDTHSCREEN;
 int HEIGHTSCREEN;
 int ENEMYAMOUNT;
@@ -86,6 +89,7 @@ bool IsColliding(Object* obj1, Object* obj2);
 void GameOver();
 void DrawGUI();
 void VerifyUserActions();
+void Debug();
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
 // **********************************************************************
@@ -108,7 +112,8 @@ void animate()
     AccumTime +=dt;
     if (AccumTime >=3) // imprime o FPS a cada 3 segundos
     {
-        cout << 1.0/dt << " FPS"<< endl;
+        FPS = 1.0/dt;
+        cout << dt << " FPS"<< endl;
         AccumTime = 0;
     }
     // cout << "AccumTime: " << AccumTime << endl;
@@ -157,7 +162,6 @@ void reshape( int w, int h )
 // **********************************************************************
 void display( void )
 {
-
 	// Limpa a tela coma cor de fundo
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -196,6 +200,10 @@ void keyboard ( unsigned char key, int x, int y )
         case ' ':
             player->Shoot(WIDTHSCREEN,HEIGHTSCREEN);
             break;
+        case 'p':
+            debug = !debug;
+            break;
+            /*
         case 'w':
             player->MoveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
             break;
@@ -205,6 +213,7 @@ void keyboard ( unsigned char key, int x, int y )
         case 'd':
             player->Rotate(true);
             break;
+        */
 		default:
 			break;
 	}
@@ -258,13 +267,14 @@ void Draw()
     }
 
     DrawGUI();
+    if(debug) Debug();
 }
 // **********************************************************************
 //  void VerifyUserActions()
 // Verifica quais ações o jogado quer realizar com a nave
 // **********************************************************************
 void VerifyUserActions()
-{/*
+{
     if(GetKeyState('W') & 0x8000)
     {
         player->MoveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
@@ -278,7 +288,7 @@ void VerifyUserActions()
     if(GetKeyState('D') & 0x8000)
     {
         player->Rotate(true);
-    }*/
+    }
 }
 
 // **********************************************************************
@@ -301,6 +311,9 @@ void InitializeVariables()
 {
     //Inicia variaveis do ambiente
     state = INGAME;
+    FPS = INFINITE;
+    debug = false;
+    displayCount = 0;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
     ENEMYAMOUNT = 3;
@@ -540,7 +553,23 @@ void DrawObject(Position* _pos, ObjectModel* _model, float _angle, float _sizeCe
     }
     glPopMatrix();
 }
-
+void Debug()
+{
+    glPushMatrix();
+    {
+        glTranslated(player->coordinate->x,player->coordinate->y,0);
+        glRotated(player->angle,0,0,1);
+        glBegin(GL_LINES);
+        {
+            glVertex2d(-(WIDTHSCREEN/2),0);
+            glVertex2d(WIDTHSCREEN/2,0);
+            glVertex2d(0,HEIGHTSCREEN/2);
+            glVertex2d(0,-(HEIGHTSCREEN/2));
+        }
+        glEnd();
+    }
+    glPopMatrix();
+}
 // **********************************************************************
 //  void ClearObjects()
 // Remove do jogo qualquer objeto que tenha o atributo "inGame" como false
@@ -588,7 +617,7 @@ void Process()
     for(int i=0; i<enemysList.size(); i++)
     {
         enemy = enemysList.at(i);
-        enemy->MoveEShip();
+        enemy->MoveEShip(FPS);
 
         for(int j=0; j<enemy->bullets.size(); j++)
         {

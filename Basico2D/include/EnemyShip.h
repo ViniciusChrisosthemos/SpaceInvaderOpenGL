@@ -26,7 +26,7 @@ class EnemyShip : public Object
         EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit, ObjectModel* _bulletModel);
         virtual ~EnemyShip();
 
-        void MoveEShip();
+        void MoveEShip(float _fps);
         void LookToTarget();
         void Shoot();
         bool CanShoot();

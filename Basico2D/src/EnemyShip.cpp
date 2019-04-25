@@ -47,7 +47,7 @@ EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _y
         p3 = new Position(target->x,target->y);
         t = 0;
 
-        speed = (rand()%3 + 3.0)/1000.0;
+        speed = 3;
     }
 // **********************************************************************
 // ~EnemyShip()
@@ -62,13 +62,12 @@ EnemyShip::~EnemyShip()
 // Move a nave inimiga, alterando o valor de t na equação da Bézire,
 // se t == 1, calcula o segundo ponto e gera o terceiro com base na posição do target
 // **********************************************************************
-void EnemyShip::MoveEShip()
+void EnemyShip::MoveEShip(float _fps)
 {
     float aux = 1-t;
     coordinate->x = pow(aux,3)*p0->x + 3*t*pow(aux,2)*p1->x + 3*t*t*aux*p2->x + t*t*t*p3->x;
     coordinate->y = pow(aux,3)*p0->y + 3*t*pow(aux,2)*p1->y + 3*t*t*aux*p2->y + t*t*t*p3->y;
-    t += speed;
-
+    t += 0.0016/speed;
     LookToTarget();
 
     if(t > 1)
