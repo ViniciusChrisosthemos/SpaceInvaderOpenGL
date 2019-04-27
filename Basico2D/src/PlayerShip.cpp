@@ -7,16 +7,18 @@
 #include <vector>
 #include <ObjectModel.h>
 // **********************************************************************
-// PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel):Object(_initialPosition, 0, 0, _model)
+// PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel):Object(_initialPosition, 0, 0, _model, int _widthScreen, int _heightScreen)
 // Construtor da classe PlayerShip
 // **********************************************************************
-PlayerShip::PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel) :
+PlayerShip::PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel, int _widthScreen, int _heightScreen) :
     Object(_initialPosition, 0, 0, _model)
 {
     health = 50;
     angle = 0;
-    speed = 40;
+    speed = 250;
     bulletModel = _bulletModel;
+    widthScreen = _widthScreen;
+    heightScreen = _heightScreen;
 }
 // **********************************************************************
 // ~PlayerShip()
@@ -27,33 +29,35 @@ PlayerShip::~PlayerShip()
     //dtor
 }
 // **********************************************************************
-// void MoveShip(int minX,int maxX,int minY,int maxY)
+// void MoveShip(float _deltaTime)
 // Move a nave, verificando e impedindo a saida da nave das extremidades da tela
 // **********************************************************************
-void PlayerShip::MoveShip(int minX,int maxX,int minY,int maxY)
+void PlayerShip::MoveShip(float _deltaTime)
 {
-    coordinate->x += (cos(angle*(M_PI/180)) * (speed/60.0));
-    coordinate->y += (sin(angle*(M_PI/180)) * (speed/60.0));
+    float alfa = speed * _deltaTime;
+    float radAngle = angle*(M_PI/180);
+    coordinate->x += (cos(radAngle) * alfa);
+    coordinate->y += (sin(radAngle) * alfa);
 
-    if(coordinate->x < minX) coordinate->x = minX;
-    else if(coordinate->x > maxX) coordinate->x = maxX;
-    if(coordinate->y < minY) coordinate->y = minY;
-    else if(coordinate->y > maxY) coordinate->y = maxY;
+    if(coordinate->x < 0) coordinate->x = 0;
+    else if(coordinate->x > widthScreen) coordinate->x = widthScreen;
+    if(coordinate->y < 0) coordinate->y = 0;
+    else if(coordinate->y > heightScreen) coordinate->y = heightScreen;
 }
 // **********************************************************************
-// void Rotate(bool toRight)
+// void Rotate(bool toRight, float _deltaTime)
 // Rotaciona a nave
 // **********************************************************************
-void PlayerShip::Rotate(bool toRight)
+void PlayerShip::Rotate(bool _toRight, float _deltaTime)
 {
-    float forceRotation = (30.0/66.0);
-    angle += (toRight) ? -forceRotation:forceRotation;
+    float forceRotation = 250.0 * _deltaTime;
+    angle += (_toRight) ? -forceRotation:forceRotation;
 }
 // **********************************************************************
-// void Shoot(int widthScreen, int heightScreen)
+// void Shoot()
 // Dispara uma bala, se possivel
 // **********************************************************************
-void PlayerShip::Shoot(int widthScreen, int heightScreen)
+void PlayerShip::Shoot()
 {
     if(bullets.size() <= 10)
     {

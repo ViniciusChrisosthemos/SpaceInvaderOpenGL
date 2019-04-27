@@ -6,7 +6,7 @@
 // Construtor da Classe Bullet
 // **********************************************************************
 Bullet::Bullet(Position* _coord, float _angle, float _limitX, float _limitY, ObjectModel* _model):
-    Object(_coord, _angle, 10, _model)
+    Object(_coord, _angle, 500, _model)
 {
     limitX = _limitX;
     limitY = _limitY;
@@ -31,10 +31,11 @@ Bullet::~Bullet()
 // void MoveBullet()
 // Move as a bala, alterando sua posição
 // **********************************************************************
-void Bullet::MoveBullet()
+void Bullet::MoveBullet(float _deltaTime)
 {
-    coordinate->x += alfaX*speed;
-    coordinate->y += alfaY*speed;
+    float alfa  = speed * _deltaTime;
+    coordinate->x += alfaX*alfa;
+    coordinate->y += alfaY*alfa;
 
     if(coordinate->x > limitX) inGame = false;
     else if(coordinate->x < 0) inGame = false;

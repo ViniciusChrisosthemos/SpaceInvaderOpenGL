@@ -29,6 +29,8 @@
 #include <ObjectModel.h>
 #include <Position.h>
 #include <ColorRGB.h>
+#include <unistd.h>
+
 using namespace std;
 
 #ifdef WIN32
@@ -52,7 +54,7 @@ enum State{INGAME,GAMEOVER};
 
 // Variáveis Globais
 State state;
-float FPS;
+float deltaTime;
 bool debug;
 int displayCount;
 int WIDTHSCREEN;
@@ -110,10 +112,10 @@ void animate()
     1.0e-6*(time_now.tv_usec - last_idle_time.tv_usec);
 #endif
     AccumTime +=dt;
+    deltaTime = (dt < 1) ? dt:0.0001;
     if (AccumTime >=3) // imprime o FPS a cada 3 segundos
     {
-        FPS = 1.0/dt;
-        cout << dt << " FPS"<< endl;
+        cout << 1.0/dt << " FPS"<< endl;
         AccumTime = 0;
     }
     // cout << "AccumTime: " << AccumTime << endl;
@@ -198,7 +200,7 @@ void keyboard ( unsigned char key, int x, int y )
 			exit ( 0 );   // a tecla ESC for pressionada
 			break;
         case ' ':
-            player->Shoot(WIDTHSCREEN,HEIGHTSCREEN);
+            player->Shoot();
             break;
         case 'p':
             debug = !debug;
@@ -277,17 +279,17 @@ void VerifyUserActions()
 {
     if(GetKeyState('W') & 0x8000)
     {
-        player->MoveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
+        player->MoveShip(deltaTime);
     }
 
     if(GetKeyState('A') & 0x8000)
     {
-        player->Rotate(false);
+        player->Rotate(false, deltaTime);
     }
 
     if(GetKeyState('D') & 0x8000)
     {
-        player->Rotate(true);
+        player->Rotate(true, deltaTime);
     }
 }
 
@@ -311,12 +313,11 @@ void InitializeVariables()
 {
     //Inicia variaveis do ambiente
     state = INGAME;
-    FPS = INFINITE;
     debug = false;
     displayCount = 0;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 3;
+    ENEMYAMOUNT = 7;
     ENEMYMODELS = 5;
     BULLETMODELS = 4;
 
@@ -324,13 +325,12 @@ void InitializeVariables()
     LoadModelsObjects();
 
     //Inicia a nave do jogador
-    player = new PlayerShip(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModels.at(rand()%BULLETMODELS));
-
+    player = new PlayerShip(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModels.at(rand()%BULLETMODELS), WIDTHSCREEN, HEIGHTSCREEN);
     //Naves inimigas obrigatorias e Naves randomizadas
     for(int i=0; i<ENEMYAMOUNT; i++)
     {
-        if(i < ENEMYMODELS) enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(i)));
-        else enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS)));
+        if(i < ENEMYMODELS) enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS)));
+        else enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i%ENEMYMODELS), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS)));
     }
 }
 // **********************************************************************
@@ -617,12 +617,12 @@ void Process()
     for(int i=0; i<enemysList.size(); i++)
     {
         enemy = enemysList.at(i);
-        enemy->MoveEShip(FPS);
+        enemy->MoveEShip(deltaTime);
 
         for(int j=0; j<enemy->bullets.size(); j++)
         {
             bullet = enemy->bullets.at(j);
-            bullet->MoveBullet();
+            bullet->MoveBullet(deltaTime);
             //Verifica colisão do disparo inimigo com o player
             if(IsColliding(player,bullet))
             {
@@ -646,7 +646,7 @@ void Process()
     for(int i=0; i<player->bullets.size(); i++)
     {
         bullet = player->bullets.at(i);
-        bullet->MoveBullet();
+        bullet->MoveBullet(deltaTime);
 
         //Verifica colisão com todas as naves inimigas
         for(int j=0; j<enemysList.size(); j++)

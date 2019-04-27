@@ -14,7 +14,7 @@ class Bullet : public Object
 
         Bullet(Position* _coord, float _angle, float _limitX, float _limitY, ObjectModel* _model);
         virtual ~Bullet();
-        void MoveBullet();
+        void MoveBullet(float _deltaTime);
 
     protected:
 

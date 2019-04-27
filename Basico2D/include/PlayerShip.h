@@ -11,13 +11,15 @@ class PlayerShip : public Object
         std::vector<Bullet*> bullets;
         ObjectModel* bulletModel;
         int health;
+        int widthScreen;
+        int heightScreen;
 
-        PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel);
+        PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel, int _widthScreen, int _heightScreen);
         virtual ~PlayerShip();
 
-        void MoveShip(int minX,int maxX,int minY,int maxY);
-        void Rotate(bool toRight);
-        void Shoot(int widthScreen, int heightScreen);
+        void MoveShip(float _deltaTime);
+        void Rotate(bool _toRight, float _deltaTime);
+        void Shoot();
         void TakeDamage();
 
     protected:

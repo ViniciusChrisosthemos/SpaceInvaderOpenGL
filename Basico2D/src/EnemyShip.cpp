@@ -19,7 +19,7 @@ EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _y
         bulletModel = _bulletModel;
 
         srand(rand()%1000);
-        fireRate = rand()%4 + 1;
+        fireRate = rand()%3 + 1;
 
         time(NULL);
         time(&currentTime);
@@ -47,7 +47,7 @@ EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _y
         p3 = new Position(target->x,target->y);
         t = 0;
 
-        speed = 3;
+        speed = rand()%5 + 1;
     }
 // **********************************************************************
 // ~EnemyShip()
@@ -62,19 +62,51 @@ EnemyShip::~EnemyShip()
 // Move a nave inimiga, alterando o valor de t na equação da Bézire,
 // se t == 1, calcula o segundo ponto e gera o terceiro com base na posição do target
 // **********************************************************************
-void EnemyShip::MoveEShip(float _fps)
+void EnemyShip::MoveEShip(float _deltaTime)
 {
     float aux = 1-t;
     coordinate->x = pow(aux,3)*p0->x + 3*t*pow(aux,2)*p1->x + 3*t*t*aux*p2->x + t*t*t*p3->x;
     coordinate->y = pow(aux,3)*p0->y + 3*t*pow(aux,2)*p1->y + 3*t*t*aux*p2->y + t*t*t*p3->y;
-    t += 0.0016/speed;
+    t += 1.0 / (speed/_deltaTime);
     LookToTarget();
 
     if(t > 1)
     {
         t = 0;
         p0 = p3;
-        p1 = new Position(p3->x*2.0 - p2->x,p3->y*2.0 - p2->y);
+
+        float nextX = p3->x*2.0 - p2->x;
+        float nextY = p3->y*2.0 - p2->y;
+        float x,y,m1;
+
+        if(nextX >= xLimit)
+        {
+            x = xLimit;
+            m1 =  (nextY - p3->y)/ (nextX - p3->x);
+            y = p3->y + (xLimit - p3->x) * m1;
+
+        }else if(nextX <= 0)
+        {
+            x = 0 ;
+            m1 = (nextY - p3->y) / (nextX - p3->x);
+            y = p3->y + (0 - p3->x) * m1;
+        }else if(nextY >= yLimit)
+        {
+            m1 = (nextX - p3->x) / (nextY - p3->y);
+            x = p3->x + (yLimit - p3->y) * m1;
+            y = yLimit;
+        }else if(nextY <= 0)
+        {
+            m1 = (nextX - p3->x) / (nextY - p3->y);
+            x = p3->x + (0 - p3->y) * m1;
+            y = 0;
+        }else
+        {
+            x = nextX;
+            y = nextY;
+        }
+
+        p1 = new Position(x,y);
         p2 = new Position(rand()%xLimit,rand()%yLimit);
         p3 = new Position(target->x,target->y);
     };
