@@ -10,16 +10,17 @@
 // EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit): Object(new Position(0,0), 0, 0.004, _model)
 // Construtor da Classe EnemyShip
 // **********************************************************************
-EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit, ObjectModel* _bulletModel) :
+EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit, ObjectModel* _bulletModel, std::vector<Bullet*> *_bullets) :
     Object(new Position(0,0), 0, 0, _model)
 {
         target = _target;
         xLimit = _xLimit;
         yLimit = _yLimit;
         bulletModel = _bulletModel;
+        bullets = _bullets;
 
         srand(rand()%1000);
-        fireRate = rand()%4 + 2;
+        fireRate = rand()%3 + 1;
 
         time(NULL);
         time(&currentTime);
@@ -79,6 +80,7 @@ void EnemyShip::MoveEShip(float _deltaTime)
         float nextY = p3->y*2.0 - p2->y;
         float x,y,m1;
 
+        //Limita a continuação de derivada a não passar da tela
         if(nextX >= xLimit)
         {
             x = xLimit;
@@ -87,7 +89,7 @@ void EnemyShip::MoveEShip(float _deltaTime)
 
         }else if(nextX <= 0)
         {
-            x = 0 ;
+            x = 0;
             m1 = (nextY - p3->y) / (nextX - p3->x);
             y = p3->y + (0 - p3->x) * m1;
         }else if(nextY >= yLimit)
@@ -132,13 +134,19 @@ void EnemyShip::LookToTarget()
 
     angle = (target->y < coordinate->y) ? (-newAngle - 0):(newAngle - 0);
 }
-
+// **********************************************************************
+// void Shoot()
+// Dispara uma bala no cenario
+// **********************************************************************
 void EnemyShip::Shoot()
 {
     Bullet* bullet = new Bullet(new Position(coordinate->x,coordinate->y),angle,xLimit,yLimit, bulletModel);
-    bullets.push_back(bullet);
+    bullets->push_back(bullet);
 }
-
+// **********************************************************************
+// bool CanShoot()
+// Verifica se a nave pode atirar, calculo em relação ao tempo do ultimo disparo
+// **********************************************************************
 bool EnemyShip::CanShoot()
 {
     time(&currentTime);

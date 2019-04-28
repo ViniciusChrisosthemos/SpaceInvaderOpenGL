@@ -19,11 +19,11 @@ class EnemyShip : public Object
         float t;
         time_t nextShoot;
         time_t currentTime;
-        char fireRate;
-        std::vector<Bullet*> bullets;
+        float fireRate;
+        std::vector<Bullet*> *bullets;
         ObjectModel* bulletModel;
 
-        EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit, ObjectModel* _bulletModel);
+        EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _yLimit, ObjectModel* _bulletModel, std::vector<Bullet*> *_bullets);
         virtual ~EnemyShip();
 
         void MoveEShip(float _fps);

@@ -66,6 +66,7 @@ vector<ObjectModel*> enemysModels;
 vector<ObjectModel*> bulletModels;
 vector<EnemyShip*> enemysList;
 vector<ColorRGB*> colorsList;
+vector<Bullet*> bulletsInGame;
 ObjectModel* playerModel;
 ObjectModel* heartModel;
 ObjectModel* gameOverScreen;
@@ -85,7 +86,7 @@ void arrow_keys ( int a_keys, int x, int y );
 
 // Métodos do Jogo
 void DrawObject(Position* pos, ObjectModel* _model, float _angle, float _sizeCell);
-void DrawRectangle(int _ix, int _iy);
+void DrawQuad(int _ix, int _iy);
 void LoadColorsList();
 void LoadModelsObjects();
 void InitializeVariables();
@@ -251,28 +252,31 @@ void arrow_keys ( int a_keys, int x, int y )
 // **********************************************************************
 void Draw()
 {
-    int i,j;
+    int i;
+    //Desenha Player
     DrawObject(player->coordinate, player->model,player->angle-90, player->model->sizePixel);
-
+    //Desenha naves inimigas
     EnemyShip* enemy;
-    Bullet* bullet;
     for(i=0; i<enemysList.size(); i++)
     {
         enemy = enemysList.at(i);
         DrawObject(enemy->coordinate, enemy->model, enemy->angle, enemy->model->sizePixel);
-        for(j=0; j<enemy->bullets.size(); j++)
-        {
-            bullet = enemy->bullets.at(j);
-            DrawObject(bullet->coordinate, bullet->model, bullet->angle, bullet->model->sizePixel);
-        }
     }
-
+    //Desenha balas
+    Bullet* bullet;
+    for(i=0; i<bulletsInGame.size(); i++)
+    {
+        bullet = bulletsInGame.at(i);
+        DrawObject(bullet->coordinate, bullet->model, bullet->angle, bullet->model->sizePixel);
+    }
+    //Desenha balas do Jogador
     for(i=0; i<player->bullets.size(); i++)
     {
         bullet = player->bullets.at(i);
         DrawObject(bullet->coordinate, bullet->model, bullet->angle, bullet->model->sizePixel);
     }
 
+    //Desenha GUI
     DrawGUI();
     if(debug) Debug();
 }
@@ -353,9 +357,11 @@ void InitializeVariables()
     enemysList.clear();
     for(int i=0; i<ENEMYAMOUNT; i++)
     {
-        if(i < ENEMYMODELS) enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS)));
-        else enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i%ENEMYMODELS), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS)));
+        if(i < ENEMYMODELS) enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS), &bulletsInGame));
+        else enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i%ENEMYMODELS), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS), &bulletsInGame));
     }
+
+    bulletsInGame.clear();
 }
 // **********************************************************************
 //  void LoadColorsList()
@@ -523,10 +529,10 @@ void DrawGUI()
     }
 }
 // **********************************************************************
-//  void DrawRectangle(int _ix, int _iy)
+//  void DrawQuad(int _ix, int _iy)
 // Método auxiliar que desenha um quadrado
 // **********************************************************************
-void DrawRectangle(float _ix, float _iy)
+void DrawQuad(float _ix, float _iy)
 {
     glBegin(GL_QUADS);
     {
@@ -567,7 +573,7 @@ void DrawObject(Position* _pos, ObjectModel* _model, float _angle, float _sizeCe
                 if(color != backgroundColor)
                 {
                     glColor3f(color->r,color->g, color->b);
-                    DrawRectangle(currentX,currentY);
+                    DrawQuad(currentX,currentY);
                 }
                 currentX++;
             }
@@ -584,6 +590,24 @@ void DrawObject(Position* _pos, ObjectModel* _model, float _angle, float _sizeCe
 // **********************************************************************
 void Debug()
 {
+    EnemyShip* enemy;
+
+    for(int i=0; i<enemysList.size(); i++)
+    {
+        enemy = enemysList.at(i);
+        glColor3f(1.0,1.0,1.0);
+        glBegin(GL_LINES);
+        {
+            glVertex2f(enemy->p0->x,enemy->p0->y);
+            glVertex2f(enemy->p1->x,enemy->p1->y);
+            glVertex2f(enemy->p1->x,enemy->p1->y);
+            glVertex2f(enemy->p2->x,enemy->p2->y);
+            glVertex2f(enemy->p2->x,enemy->p2->y);
+            glVertex2f(enemy->p3->x,enemy->p3->y);
+        }
+        glEnd();
+    }
+
     glPushMatrix();
     {
         glTranslated(player->coordinate->x,player->coordinate->y,0);
@@ -599,6 +623,8 @@ void Debug()
         glEnd();
     }
     glPopMatrix();
+
+
 }
 // **********************************************************************
 //  void ClearObjects()
@@ -606,18 +632,20 @@ void Debug()
 // **********************************************************************
 void ClearObjects()
 {
-    int i,j;
+    int i;
     EnemyShip* enemy;
     //Verifica se alguma nave inimiga não está mais no jogo
     for(i=0; i<enemysList.size(); i++)
     {
         enemy = enemysList.at(i);
         if(!enemy->inGame) enemysList.erase(enemysList.begin()+i);
-
-        for(j=0; j<enemy->bullets.size(); j++)
-        {
-            if(!enemy->bullets.at(j)->inGame) enemy->bullets.erase(enemy->bullets.begin()+j);
-        }
+    }
+    Bullet* bullet;
+    //Verifica se alguma bala não está no jogo
+    for(i=0; i<bulletsInGame.size(); i++)
+    {
+        bullet = bulletsInGame.at(i);
+        if(!bullet->inGame) bulletsInGame.erase(bulletsInGame.begin()+i);
     }
     //Verifica sem algum disparo não está mais no jogo
     for(i=0; i<player->bullets.size(); i++)
@@ -645,13 +673,11 @@ void Process()
         win = true;
         return;
     }
-
     //limpa ohjetos que não estão mais no jogo
     ClearObjects();
     //verifica input do jogador
     VerifyUserActions();
-
-    //Move todas as naves inimigas e seus disparos
+    //Move todas as naves inimigas
     EnemyShip* enemy;
     Bullet* bullet;
     for(int i=0; i<enemysList.size(); i++)
@@ -659,18 +685,6 @@ void Process()
         enemy = enemysList.at(i);
         enemy->MoveEShip(deltaTime);
 
-        for(int j=0; j<enemy->bullets.size(); j++)
-        {
-            bullet = enemy->bullets.at(j);
-            bullet->MoveBullet(deltaTime);
-            //Verifica colisão do disparo inimigo com o player
-            if(IsColliding(player,bullet))
-            {
-                player->TakeDamage();
-                bullet->inGame = false;
-                return;
-            }
-        }
         //Verifica colisão da nave com o player
         if(IsColliding(player,enemy))
         {
@@ -680,6 +694,19 @@ void Process()
         }
         //Faz a nave inimiga disparar, caso seja possivel
         if(enemy->CanShoot()) enemy->Shoot();
+    }
+    //Move balas em jogo
+    for(int j=0; j<bulletsInGame.size(); j++)
+    {
+        bullet = bulletsInGame.at(j);
+        bullet->MoveBullet(deltaTime);
+        //Verifica colisão do disparo inimigo com o player
+        if(IsColliding(player,bullet))
+        {
+            player->TakeDamage();
+            bullet->inGame = false;
+            return;
+        }
     }
 
     //Move todas as balas disparadas pelo player

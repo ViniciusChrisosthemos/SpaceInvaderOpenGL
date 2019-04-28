@@ -6,7 +6,7 @@
 // Construtor da Classe Bullet
 // **********************************************************************
 Bullet::Bullet(Position* _coord, float _angle, float _limitX, float _limitY, ObjectModel* _model):
-    Object(_coord, _angle, 500, _model)
+    Object(_coord, _angle, 600, _model)
 {
     limitX = _limitX;
     limitY = _limitY;
