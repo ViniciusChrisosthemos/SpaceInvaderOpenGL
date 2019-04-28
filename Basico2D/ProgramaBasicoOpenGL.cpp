@@ -56,7 +56,7 @@ enum State{INGAME,GAMEOVER};
 State state;
 float deltaTime;
 bool debug;
-int displayCount;
+bool win;
 int WIDTHSCREEN;
 int HEIGHTSCREEN;
 int ENEMYAMOUNT;
@@ -69,6 +69,8 @@ vector<ColorRGB*> colorsList;
 ObjectModel* playerModel;
 ObjectModel* heartModel;
 ObjectModel* gameOverScreen;
+ObjectModel* winMessage;
+ObjectModel* loseMessage;
 PlayerShip* player;
 ColorRGB* backgroundColor;
 
@@ -94,6 +96,7 @@ void GameOver();
 void DrawGUI();
 void VerifyUserActions();
 void Debug();
+void LoadConfig();
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
 // **********************************************************************
@@ -294,6 +297,29 @@ void VerifyUserActions()
         player->Rotate(true, deltaTime);
     }
 }
+// **********************************************************************
+//  void LoadConfig()
+// Carraga a quantidade de inimigos a ser combatido na partida, assim
+// como a quantidade de modelos de naves e disparos
+// **********************************************************************
+void LoadConfig()
+{
+    ifstream file;
+
+    file.open("Config.txt");
+    if(!file)
+    {
+        printf("Config.txt nao encontrado!\n");
+        return;
+    }
+
+    file >> ENEMYAMOUNT;
+    file >> ENEMYMODELS;
+    file >> BULLETMODELS;
+
+    printf("Config.txt carregado com sucesso!\n");
+    file.close();
+}
 
 // **********************************************************************
 //  bool IsColliding(Object* obj1, Object* obj2)
@@ -316,16 +342,8 @@ void InitializeVariables()
     //Inicia variaveis do ambiente
     state = INGAME;
     debug = false;
-    displayCount = 0;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 3;
-    ENEMYMODELS = 5;
-    BULLETMODELS = 4;
-
-    LoadColorsList();
-    LoadModelsObjects();
-
     backgroundColor = colorsList.at(0);
 
     //Inicia a nave do jogador
@@ -376,8 +394,19 @@ void LoadColorsList()
 // **********************************************************************
 void GameOver()
 {
-    //printf("GAME OVER!!!\n");
-    DrawObject(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),gameOverScreen,0,gameOverScreen->sizePixel);
+    int padding = 50;
+    Position* pos = new Position(WIDTHSCREEN/2,HEIGHTSCREEN-(gameOverScreen->model.size()/2) * gameOverScreen->sizePixel - padding);
+    DrawObject(pos, gameOverScreen, 0, gameOverScreen->sizePixel);
+
+    if(win)
+    {
+        pos->y = padding + winMessage->model.size()*winMessage->sizePixel;
+        DrawObject(pos, winMessage, 0, winMessage->sizePixel);
+    }else
+    {
+        pos->y = padding + loseMessage->model.size()*loseMessage->sizePixel;
+        DrawObject(pos, loseMessage, 0, loseMessage->sizePixel);
+    }
 
     if(GetKeyState('R') & 0x8000)
     {
@@ -450,6 +479,10 @@ void LoadModelsObjects()
     LoadModel(heartModel, "Heart.txt");
     gameOverScreen = new ObjectModel();
     LoadModel(gameOverScreen, "GameOverScreen.txt");
+    winMessage = new ObjectModel();
+    LoadModel(winMessage, "WinMessage.txt");
+    loseMessage = new ObjectModel();
+    LoadModel(loseMessage, "LoseMessage.txt");
 }
 // **********************************************************************
 //  void DrawGUI()
@@ -480,7 +513,7 @@ void DrawGUI()
 
     EnemyShip* enemy;
     pos->x = WIDTHSCREEN - 10;
-    pos->y = 10;
+    pos->y = 15;
     //Desenha as naves inimigas que ainda estão vivas
     for(i=0; i<enemysList.size(); i++)
     {
@@ -598,14 +631,24 @@ void ClearObjects()
 // **********************************************************************
 void Process()
 {
+    //Verifica se o jogador esta no jogo
     if(!player->inGame)
     {
         state = GAMEOVER;
+        win = false;
+        return;
+    }
+    //verifica se o jogador ganhou
+    if(enemysList.empty())
+    {
+        state = GAMEOVER;
+        win = true;
         return;
     }
 
+    //limpa ohjetos que não estão mais no jogo
     ClearObjects();
-
+    //verifica input do jogador
     VerifyUserActions();
 
     //Move todas as naves inimigas e seus disparos
@@ -665,6 +708,9 @@ void Process()
 // **********************************************************************
 int  main ( int argc, char** argv )
 {
+    LoadConfig();
+    LoadColorsList();
+    LoadModelsObjects();
     InitializeVariables();
     printf("Variaveis iniciadas\n");
 

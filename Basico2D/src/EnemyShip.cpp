@@ -19,7 +19,7 @@ EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _y
         bulletModel = _bulletModel;
 
         srand(rand()%1000);
-        fireRate = rand()%3 + 1;
+        fireRate = rand()%4 + 2;
 
         time(NULL);
         time(&currentTime);
@@ -47,7 +47,7 @@ EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _y
         p3 = new Position(target->x,target->y);
         t = 0;
 
-        speed = rand()%4 + 2;
+        speed = rand()%3 + 3;
     }
 // **********************************************************************
 // ~EnemyShip()
@@ -108,7 +108,13 @@ void EnemyShip::MoveEShip(float _deltaTime)
 
         p1 = new Position(x,y);
         p2 = new Position(rand()%xLimit,rand()%yLimit);
-        p3 = new Position(target->x,target->y);
+        if(rand()%2)
+        {
+            p3 = new Position(target->x,target->y);
+        }else
+        {
+            p2 = new Position(rand()%xLimit,rand()%yLimit);
+        }
     };
 }
 // **********************************************************************
