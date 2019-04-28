@@ -68,7 +68,9 @@ vector<EnemyShip*> enemysList;
 vector<ColorRGB*> colorsList;
 ObjectModel* playerModel;
 ObjectModel* heartModel;
+ObjectModel* gameOverScreen;
 PlayerShip* player;
+ColorRGB* backgroundColor;
 
 
 // Métodos OpenGL
@@ -81,7 +83,7 @@ void arrow_keys ( int a_keys, int x, int y );
 
 // Métodos do Jogo
 void DrawObject(Position* pos, ObjectModel* _model, float _angle, float _sizeCell);
-void DrawRectangle(int _ix, int _iy, int _fx, int _fy);
+void DrawRectangle(int _ix, int _iy);
 void LoadColorsList();
 void LoadModelsObjects();
 void InitializeVariables();
@@ -137,7 +139,7 @@ void animate()
 void init(void)
 {
 	// Define a cor do fundo da tela (PRETO)
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(backgroundColor->r, backgroundColor->g, backgroundColor->b, 1.0f);
 
 }
 
@@ -317,16 +319,20 @@ void InitializeVariables()
     displayCount = 0;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
-    ENEMYAMOUNT = 7;
+    ENEMYAMOUNT = 3;
     ENEMYMODELS = 5;
     BULLETMODELS = 4;
 
     LoadColorsList();
     LoadModelsObjects();
 
+    backgroundColor = colorsList.at(0);
+
     //Inicia a nave do jogador
     player = new PlayerShip(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),playerModel, bulletModels.at(rand()%BULLETMODELS), WIDTHSCREEN, HEIGHTSCREEN);
+
     //Naves inimigas obrigatorias e Naves randomizadas
+    enemysList.clear();
     for(int i=0; i<ENEMYAMOUNT; i++)
     {
         if(i < ENEMYMODELS) enemysList.push_back(new EnemyShip(player->coordinate, enemysModels.at(i), WIDTHSCREEN, HEIGHTSCREEN,bulletModels.at(rand()%BULLETMODELS)));
@@ -371,29 +377,13 @@ void LoadColorsList()
 void GameOver()
 {
     //printf("GAME OVER!!!\n");
-    glPushMatrix();
-    {
-        glTranslated(400,300,0);
-        glBegin(GL_LINES);
-        {
-            glVertex2d(0,0);
-            glVertex2d(40,0);
-            glVertex2d(40,25);
-            glVertex2d(25,25);
-            glVertex2d(25,20);
-            glVertex2d(35,20);
-            glVertex2d(35,10);
-            glVertex2d(10,10);
-            glVertex2d(10,40);
-            glVertex2d(40,40);
-            glVertex2d(40,50);
-            glVertex2d(0,50);
-            glVertex2d(0,0);
-        }
-        glEnd();
-    }
-    glPopMatrix();
+    DrawObject(new Position(WIDTHSCREEN/2,HEIGHTSCREEN/2),gameOverScreen,0,gameOverScreen->sizePixel);
 
+    if(GetKeyState('R') & 0x8000)
+    {
+        InitializeVariables();
+        return;
+    }
     //exit(0);
 }
 // **********************************************************************
@@ -458,6 +448,8 @@ void LoadModelsObjects()
     LoadModel(playerModel, "PShip.txt");
     heartModel = new ObjectModel();
     LoadModel(heartModel, "Heart.txt");
+    gameOverScreen = new ObjectModel();
+    LoadModel(gameOverScreen, "GameOverScreen.txt");
 }
 // **********************************************************************
 //  void DrawGUI()
@@ -466,48 +458,49 @@ void LoadModelsObjects()
 void DrawGUI()
 {
     glColor3f(1.0,0.0,0.0);
-    int x=20, y=HEIGHTSCREEN-20, i, bulletCount;
+    Position* pos = new Position(20, HEIGHTSCREEN-20);
+    int i, bulletCount;
     //Desenha as vidas do player
     for(i=0; i<player->health; i++)
     {
-        DrawObject(new Position(x,y),heartModel,0,heartModel->sizePixel);
-        x+=heartModel->model.at(0).size() * heartModel->sizePixel + 5;
+        DrawObject(pos,heartModel,0,heartModel->sizePixel);
+        pos->x+=heartModel->model.at(0).size() * heartModel->sizePixel + 5;
     }
 
-    x = 15;
-    y = HEIGHTSCREEN - 100;
+    pos->x = 15;
+    pos->y = HEIGHTSCREEN - 50;
     bulletCount = 10 - player->bullets.size();
     glColor3f(1.0,1.0,1.0);
     //Desenha as balas disponiveis do jogador
     for(i=0; i<bulletCount; i++)
     {
-        DrawRectangle(x,y,x+10,y+10);
-        y-=15;
+        DrawObject(pos,player->bulletModel,0,3);
+        pos->y-=15;
     }
 
     EnemyShip* enemy;
-    x = WIDTHSCREEN - 10;
-    y = 10;
+    pos->x = WIDTHSCREEN - 10;
+    pos->y = 10;
     //Desenha as naves inimigas que ainda estão vivas
     for(i=0; i<enemysList.size(); i++)
     {
         enemy = enemysList.at(i);
-        DrawObject(new Position(x,y),enemy->model, 90, 2);
-        x -= 30;
+        DrawObject(pos,enemy->model, 90, 2);
+        pos->x -= 30;
     }
 }
 // **********************************************************************
-//  void DrawRectangle(int _ix, int _iy, int _fx, int _fy)
+//  void DrawRectangle(int _ix, int _iy)
 // Método auxiliar que desenha um quadrado
 // **********************************************************************
-void DrawRectangle(int _ix, int _iy, int _fx, int _fy)
+void DrawRectangle(float _ix, float _iy)
 {
     glBegin(GL_QUADS);
     {
         glVertex2d(_ix,_iy);
-        glVertex2d(_fx,_iy);
-        glVertex2d(_fx,_fy);
-        glVertex2d(_ix,_fy);
+        glVertex2d(_ix+1,_iy);
+        glVertex2d(_ix+1,_iy+1);
+        glVertex2d(_ix,_iy+1);
     }
     glEnd();
 }
@@ -517,48 +510,52 @@ void DrawRectangle(int _ix, int _iy, int _fx, int _fy)
 // **********************************************************************
 void DrawObject(Position* _pos, ObjectModel* _model, float _angle, float _sizeCell)
 {
-    int nextX, nextY;
-    int y = _model->model.size();
-    int x = _model->model.at(0).size();
-    int currentX = -(x/2) * _sizeCell;
-    int currentY = -(y/2) * _sizeCell;
+    int i,j;
+    float x = _model->model.at(0).size();
+    float y = _model->model.size();
+    float currentX = x/-2.0;
+    float currentY = y/-2.0;
+    float baseX = currentX;
     ColorRGB* color;
     vector<int> temp;
 
     glPushMatrix();
     {
-        glTranslatef(_pos->x,_pos->y,0);
+        glTranslatef(_pos->x - (x/2),_pos->y - (y/2),0);
+        glScaled(_sizeCell,_sizeCell,1);
         glRotated(_angle,0,0,1);
 
-        for(int line=y-1; line>=0; line--)
+        for(i=y-1; i>=0; i--)
         {
-            temp = _model->model.at(line);
-            nextY = currentY + _sizeCell;
-
-            for(int column=0; column<x; column++)
+            temp = _model->model.at(i);
+            for(j=0; j<x; j++)
             {
-                nextX = currentX + _sizeCell;
-                if(temp.at(column))
+                color = colorsList.at(temp.at(j));
+                if(color != backgroundColor)
                 {
-                    color = colorsList.at(temp.at(column));
-                    glColor3f(color->r,color->g,color->b);
-                    DrawRectangle(currentX,currentY,nextX,nextY);
+                    glColor3f(color->r,color->g, color->b);
+                    DrawRectangle(currentX,currentY);
                 }
-                currentX = nextX;
+                currentX++;
             }
-            currentY = nextY;
-            currentX = -(x/2) * _sizeCell;
-            nextX = 0;
+            currentY++;
+            currentX = baseX;
         }
+
     }
     glPopMatrix();
 }
+// **********************************************************************
+//  void Debug()
+// Desenha algumas informações uteis na tela
+// **********************************************************************
 void Debug()
 {
     glPushMatrix();
     {
         glTranslated(player->coordinate->x,player->coordinate->y,0);
         glRotated(player->angle,0,0,1);
+        glColor3f(1.0,1.0,1.0);
         glBegin(GL_LINES);
         {
             glVertex2d(-(WIDTHSCREEN/2),0);

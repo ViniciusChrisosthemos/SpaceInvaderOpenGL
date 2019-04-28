@@ -47,7 +47,7 @@ EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _y
         p3 = new Position(target->x,target->y);
         t = 0;
 
-        speed = rand()%5 + 1;
+        speed = rand()%4 + 2;
     }
 // **********************************************************************
 // ~EnemyShip()

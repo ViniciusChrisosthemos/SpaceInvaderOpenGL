@@ -13,7 +13,7 @@
 PlayerShip::PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel, int _widthScreen, int _heightScreen) :
     Object(_initialPosition, 0, 0, _model)
 {
-    health = 50;
+    health = 3;
     angle = 0;
     speed = 250;
     bulletModel = _bulletModel;
