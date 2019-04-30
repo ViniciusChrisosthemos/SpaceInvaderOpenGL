@@ -8,7 +8,6 @@ class Bullet : public Object
     public:
         float limitX;
         float limitY;
-        bool inGame;
         float alfaX;
         float alfaY;
 

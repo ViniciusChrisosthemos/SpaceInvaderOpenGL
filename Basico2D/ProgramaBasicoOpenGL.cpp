@@ -120,7 +120,6 @@ void animate()
 #endif
     AccumTime +=dt;
     deltaTime = (dt < 1) ? dt:deltaTime;
-    printf("DELTA TIME = %f\n",deltaTime);
     if (AccumTime >=3) // imprime o FPS a cada 3 segundos
     {
         cout << 1.0/dt << " FPS"<< endl;
