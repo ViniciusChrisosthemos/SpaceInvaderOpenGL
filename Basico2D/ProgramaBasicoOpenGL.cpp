@@ -685,7 +685,6 @@ void Process()
     VerifyUserActions();
     //Move todas as naves inimigas
     EnemyShip* enemy;
-    Bullet* bullet;
     for(int i=0; i<enemysList.size(); i++)
     {
         enemy = enemysList.at(i);
@@ -702,6 +701,7 @@ void Process()
         if(enemy->CanShoot()) enemy->Shoot();
     }
     //Move balas em jogo
+    Bullet* bullet;
     for(int j=0; j<bulletsInGame.size(); j++)
     {
         bullet = bulletsInGame.at(j);

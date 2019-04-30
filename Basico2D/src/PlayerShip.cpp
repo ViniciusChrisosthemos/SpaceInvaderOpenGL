@@ -13,7 +13,7 @@
 PlayerShip::PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel, int _widthScreen, int _heightScreen) :
     Object(_initialPosition, 0, 0, _model)
 {
-    health = 5;
+    health = 3;
     angle = 0;
     speed = 250;
     bulletModel = _bulletModel;
@@ -24,10 +24,7 @@ PlayerShip::PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectMo
 // ~PlayerShip()
 // Desconstrutor da classe PlayerShip
 // **********************************************************************
-PlayerShip::~PlayerShip()
-{
-    //dtor
-}
+PlayerShip::~PlayerShip(){}
 // **********************************************************************
 // void MoveShip(float _deltaTime)
 // Move a nave, verificando e impedindo a saida da nave das extremidades da tela
@@ -35,7 +32,7 @@ PlayerShip::~PlayerShip()
 void PlayerShip::MoveShip(float _deltaTime)
 {
     float alfa = speed * _deltaTime;
-    float radAngle = angle*(M_PI/180);
+    float radAngle = angle*(M_PI/180.0);
     coordinate->x += (cos(radAngle) * alfa);
     coordinate->y += (sin(radAngle) * alfa);
 
