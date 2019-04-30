@@ -13,7 +13,7 @@
 PlayerShip::PlayerShip(Position* _initialPosition, ObjectModel* _model, ObjectModel* _bulletModel, int _widthScreen, int _heightScreen) :
     Object(_initialPosition, 0, 0, _model)
 {
-    health = 3;
+    health = 5;
     angle = 0;
     speed = 250;
     bulletModel = _bulletModel;
@@ -72,6 +72,7 @@ void PlayerShip::Shoot()
 void PlayerShip::TakeDamage()
 {
     health--;
+    printf("TAKE DAMAGE\n");
     if(health <= 0) inGame = false;
 }
 

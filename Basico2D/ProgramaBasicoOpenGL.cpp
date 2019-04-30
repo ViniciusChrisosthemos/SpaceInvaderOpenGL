@@ -55,6 +55,7 @@ enum State{INGAME,GAMEOVER};
 // Variáveis Globais
 State state;
 float deltaTime;
+bool canProcess = false;
 bool debug;
 bool win;
 int WIDTHSCREEN;
@@ -118,7 +119,8 @@ void animate()
     1.0e-6*(time_now.tv_usec - last_idle_time.tv_usec);
 #endif
     AccumTime +=dt;
-    deltaTime = (dt < 1) ? dt:0.0001;
+    deltaTime = (dt < 1) ? dt:deltaTime;
+    printf("DELTA TIME = %f\n",deltaTime);
     if (AccumTime >=3) // imprime o FPS a cada 3 segundos
     {
         cout << 1.0/dt << " FPS"<< endl;
@@ -134,6 +136,7 @@ void animate()
     //  cout << "Espaco Pressionado" << endl;
 
     // Redesenha
+    if(deltaTime < 1 & deltaTime != 0) canProcess = true;
     glutPostRedisplay();
 }
 // **********************************************************************
@@ -181,15 +184,18 @@ void display( void )
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    switch(state)
+    if(canProcess)
     {
-        case INGAME:
-            Process();
-            Draw();
-            break;
-        case GAMEOVER:
-            GameOver();
-            break;
+        switch(state)
+        {
+            case INGAME:
+                Process();
+                Draw();
+                break;
+            case GAMEOVER:
+                GameOver();
+                break;
+        }
     }
 	glutSwapBuffers();
 }

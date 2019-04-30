@@ -20,7 +20,7 @@ EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _y
         bullets = _bullets;
 
         srand(rand()%1000);
-        fireRate = rand()%3 + 1;
+        fireRate = rand()%3 + 2;
 
         time(NULL);
         time(&currentTime);
@@ -56,7 +56,13 @@ EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _y
 // **********************************************************************
 EnemyShip::~EnemyShip()
 {
-
+    delete p0;
+    delete p1;
+    delete p2;
+    delete p3;
+    delete target;
+    delete bullets;
+    delete bulletModel;
 }
 // **********************************************************************
 // void MoveEShip()

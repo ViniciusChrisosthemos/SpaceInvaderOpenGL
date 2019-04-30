@@ -25,7 +25,6 @@ Bullet::Bullet(Position* _coord, float _angle, float _limitX, float _limitY, Obj
 // **********************************************************************
 Bullet::~Bullet()
 {
-
 }
 // **********************************************************************
 // void MoveBullet()

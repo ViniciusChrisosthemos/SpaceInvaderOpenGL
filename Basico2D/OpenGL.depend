@@ -526,3 +526,111 @@
 1556191601 source:c:\users\17204102\desktop\spaceinvaderopengl\basico2d\src\position.cpp
 	"Position.h"
 
+1556632080 source:c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
+	<iostream>
+	<cmath>
+	<ctime>
+	<stdio.h>
+	<time.h>
+	<stdlib.h>
+	<fstream>
+	<string>
+	<sstream>
+	<vector>
+	<EnemyShip.h>
+	<PlayerShip.h>
+	<ObjectModel.h>
+	<Position.h>
+	<ColorRGB.h>
+	<unistd.h>
+	<windows.h>
+	<glut.h>
+	<sys/time.h>
+	<GLUT/glut.h>
+	<glut.h>
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\include\enemyship.h
+	<Position.h>
+	<Object.h>
+	<ObjectModel.h>
+	<time.h>
+	<Bullet.h>
+	<vector>
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\include\position.h
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\include\object.h
+	<Position.h>
+	<ObjectModel.h>
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\include\objectmodel.h
+	<vector>
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\include\bullet.h
+	"Object.h"
+	<ObjectModel.h>
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\include\playership.h
+	<Object.h>
+	<Bullet.h>
+	<vector>
+	<ObjectModel.h>
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\include\colorrgb.h
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\gl\glut.h
+	"freeglut.h"
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\gl\freeglut.h
+	"freeglut_std.h"
+	"freeglut_ext.h"
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\gl\freeglut_std.h
+	<windows.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1556629178 c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\gl\freeglut_ext.h
+
+1556629178 source:c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\src\bullet.cpp
+	"Bullet.h"
+	"Position.h"
+	"math.h"
+
+1556629178 source:c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\src\colorrgb.cpp
+	"ColorRGB.h"
+
+1556632125 source:c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\src\enemyship.cpp
+	<EnemyShip.h>
+	<stdlib.h>
+	<time.h>
+	<Position.h>
+	<math.h>
+	<stdio.h>
+	<ObjectModel.h>
+
+1556629178 source:c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\src\object.cpp
+	"Object.h"
+
+1556629178 source:c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\src\objectmodel.cpp
+	"ObjectModel.h"
+	<stdio.h>
+	<vector>
+
+1556629610 source:c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\src\playership.cpp
+	<PlayerShip.h>
+	<Position.h>
+	<math.h>
+	<Bullet.h>
+	<Object.h>
+	<stdio.h>
+	<vector>
+	<ObjectModel.h>
+
+1556629178 source:c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\src\position.cpp
+	"Position.h"
+
+1556629178 source:c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\util.cpp
+	<Bullet.h>
+	<stddef.h>
+
