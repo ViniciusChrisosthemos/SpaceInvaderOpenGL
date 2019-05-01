@@ -63,8 +63,10 @@ int HEIGHTSCREEN;
 int ENEMYAMOUNT;
 int ENEMYMODELS;
 int BULLETMODELS;
+int score;
 vector<ObjectModel*> enemysModels;
 vector<ObjectModel*> bulletModels;
+vector<ObjectModel*> numbers;
 vector<EnemyShip*> enemysList;
 vector<ColorRGB*> colorsList;
 vector<Bullet*> bulletsInGame;
@@ -90,6 +92,7 @@ void DrawObject(Position* pos, ObjectModel* _model, float _angle, float _sizeCel
 void DrawQuad(int _ix, int _iy);
 void LoadColorsList();
 void LoadModelsObjects();
+void LoadModel(ObjectModel* _modelObj, char fileName[]);
 void InitializeVariables();
 void Process();
 void Draw();
@@ -99,6 +102,8 @@ void DrawGUI();
 void VerifyUserActions();
 void Debug();
 void LoadConfig();
+void LoadNumbersModels();
+void DrawScore();
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
 // **********************************************************************
@@ -166,7 +171,6 @@ void reshape( int w, int h )
     glLoadIdentity();
     glOrtho(0,10,0,10,0,1);
 }
-
 // **********************************************************************
 //  void display( void )
 // **********************************************************************
@@ -183,8 +187,10 @@ void display( void )
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
     if(canProcess)
     {
+
         switch(state)
         {
             case INGAME:
@@ -196,6 +202,7 @@ void display( void )
                 break;
         }
     }
+
 	glutSwapBuffers();
 }
 
@@ -251,6 +258,54 @@ void arrow_keys ( int a_keys, int x, int y )
 			break;
 	}
 }
+// **********************************************************************
+//  LoadNumbersModels()
+//  Carrega os modelos dos numeros
+// **********************************************************************
+void LoadNumbersModels()
+{
+    ifstream file;
+    char fileName[10];
+    ObjectModel* numberModel;
+
+    for(int i=0; i<10; i++)
+    {
+        sprintf(fileName,"%d.txt",i);
+
+        file.open(fileName);
+
+        if(file == NULL)
+        {
+            printf("%d.txt não encontrado!\n",i);
+            return;
+        }
+
+        numberModel = new ObjectModel();
+        LoadModel(numberModel, fileName);
+        numbers.push_back(numberModel);
+
+        file.close();
+    }
+    printf("Numeros carregados com sucesso!\n");
+}
+// **********************************************************************
+//  void DrawScore()
+//  Desenha a pontuação do jogador no canto superior direito da tela
+// **********************************************************************
+void DrawScore()
+{
+    Position pos(WIDTHSCREEN-10,HEIGHTSCREEN-10);
+    ObjectModel* number;
+    int aux = score;
+    while(aux > 0)
+    {
+        number = numbers.at(aux%10);
+        DrawObject(&pos, number, 0, number->sizePixel);
+        aux = aux/10;
+        pos.x  -= number->model.at(0).size() * (number->sizePixel+1);
+    }
+}
+
 // **********************************************************************
 //  void Draw ()
 // Desenha todos os objetos do jogo na tela
@@ -353,6 +408,7 @@ void InitializeVariables()
     debug = false;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
+    score = 0;
     backgroundColor = colorsList.at(0);
 
     //Inicia a nave do jogador
@@ -494,6 +550,9 @@ void LoadModelsObjects()
     LoadModel(winMessage, "WinMessage.txt");
     loseMessage = new ObjectModel();
     LoadModel(loseMessage, "LoseMessage.txt");
+
+    //Le os modelos dos numeros
+    LoadNumbersModels();
 }
 // **********************************************************************
 //  void DrawGUI()
@@ -532,6 +591,9 @@ void DrawGUI()
         DrawObject(pos,enemy->model, 90, 2);
         pos->x -= 30;
     }
+
+    //Desenha Score
+    DrawScore();
 }
 // **********************************************************************
 //  void DrawQuad(int _ix, int _iy)
@@ -728,6 +790,7 @@ void Process()
             {
                 enemy->inGame = false;
                 bullet->inGame = false;
+                score += enemy->value;
                 break;
             }
         }

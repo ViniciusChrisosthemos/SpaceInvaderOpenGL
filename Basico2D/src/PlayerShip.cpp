@@ -69,7 +69,6 @@ void PlayerShip::Shoot()
 void PlayerShip::TakeDamage()
 {
     health--;
-    printf("TAKE DAMAGE\n");
     if(health <= 0) inGame = false;
 }
 

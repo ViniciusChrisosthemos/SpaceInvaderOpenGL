@@ -16,6 +16,7 @@ class EnemyShip : public Object
         Position *p3;
         Position *target;
         int xLimit,yLimit;
+        int value;
         float t;
         time_t nextShoot;
         time_t currentTime;

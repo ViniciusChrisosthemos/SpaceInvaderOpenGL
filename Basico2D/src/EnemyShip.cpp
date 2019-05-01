@@ -19,9 +19,8 @@ EnemyShip::EnemyShip(Position *_target, ObjectModel* _model, int _xLimit, int _y
         bulletModel = _bulletModel;
         bullets = _bullets;
 
-        srand(rand()%1000);
         fireRate = rand()%3 + 2;
-
+        value = (rand()%5 + 1) * 50;
         time(NULL);
         time(&currentTime);
         nextShoot = currentTime + fireRate;
@@ -132,7 +131,7 @@ void EnemyShip::MoveEShip(float _deltaTime)
 void EnemyShip::LookToTarget()
 {
     Position v1 = Position(target->x - coordinate->x, target->y - coordinate->y);
-    Position v2 = Position(800 - coordinate->x, 0);
+    Position v2 = Position(xLimit - coordinate->x, 0);
 
     float scaleProduct = v1.x*v2.x + v1.y*v2.y;
     float module = sqrt(v1.x*v1.x + v1.y*v1.y)*sqrt(v2.x*v2.x + v2.y*v2.y);
