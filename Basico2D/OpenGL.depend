@@ -114,8 +114,9 @@
 
 1554727762 D
 
-1556685534 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
+1556736936 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
 	<iostream>
+	<string>
 	<cmath>
 	<ctime>
 	<stdio.h>
@@ -130,6 +131,7 @@
 	<ObjectModel.h>
 	<Position.h>
 	<ColorRGB.h>
+	<TextManager.h>
 	<unistd.h>
 	<windows.h>
 	<glut.h>
@@ -229,12 +231,12 @@
 
 1555277177 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\point.h
 
-1556671220 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\bullet.cpp
+1556738227 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\bullet.cpp
 	"Bullet.h"
 	"Position.h"
 	"math.h"
 
-1556671220 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\bullet.h
+1556738234 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\bullet.h
 	"Object.h"
 	<ObjectModel.h>
 
@@ -391,9 +393,9 @@
 1555819756 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\objectmodel.h
 	<vector>
 
-1555819756 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\position.h
+1556738084 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\position.h
 
-1555819756 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\position.cpp
+1556738072 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\position.cpp
 	"Position.h"
 
 1555819756 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\colorrgb.h
@@ -633,4 +635,18 @@
 1556629178 source:c:\users\17204102\desktop\temp\spaceinvaderopengl\basico2d\util.cpp
 	<Bullet.h>
 	<stddef.h>
+
+1556729577 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\text.cpp
+	"Text.h"
+	<Position.h>
+
+1556729550 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\text.h
+	<Position.h>
+
+1556735947 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\textmanager.cpp
+	"TextManager.h"
+	<Text.h>
+
+1556735811 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\textmanager.h
+	<Text.h>
 

@@ -15,6 +15,7 @@
 //
 
 #include <iostream>
+#include <string>
 #include <cmath>
 #include <ctime>
 #include <stdio.h>
@@ -29,6 +30,7 @@
 #include <ObjectModel.h>
 #include <Position.h>
 #include <ColorRGB.h>
+#include <TextManager.h>
 #include <unistd.h>
 
 using namespace std;
@@ -64,6 +66,7 @@ int ENEMYAMOUNT;
 int ENEMYMODELS;
 int BULLETMODELS;
 int score;
+int bestScore;
 vector<ObjectModel*> enemysModels;
 vector<ObjectModel*> bulletModels;
 vector<ObjectModel*> numbers;
@@ -75,7 +78,7 @@ ObjectModel* playerModel;
 ObjectModel* heartModel;
 PlayerShip* player;
 ColorRGB* backgroundColor;
-
+TextManager textManager;
 
 // Métodos OpenGL
 void animate();
@@ -93,17 +96,21 @@ void LoadModel(ObjectModel* _modelObj, char fileName[]);
 void LoadConfig();
 void LoadNumbersModels();
 void LoadAlphabet();
+void LoadBestScore();
 void Process();
 void GameOver();
 void VerifyUserActions();
 void Draw();
 void DrawGUI();
 void DrawScore();
-void DrawWord(char _word[], int _length, int _scale, Position* pos);
+void DrawWord(Text* _text);
+void DrawNumber(int _number, Position* _pos, int _scale);
 void DrawObject(Position* pos, ObjectModel* _model, float _angle, float _sizeCell);
 void DrawQuad(int _ix, int _iy);
 void Debug();
+void Quit();
 bool IsColliding(Object* obj1, Object* obj2);
+
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
 // **********************************************************************
@@ -174,13 +181,9 @@ void reshape( int w, int h )
 
 void Menu()
 {
-    DrawWord("space invaders", 14, 10, new Position(45,560));
-    DrawWord("computacao grafica", 18, 3, new Position(220, 500));
-    DrawWord("vinicius chrisosthemos teixeira", 31, 2, new Position(160, 20));
-    //DrawWord("pressione", 9, 3, new Position(170, 300));
-    //DrawWord("s", 1, 5, new Position(370, 300));
-    //DrawWord("para iniciar", 12, 3, new Position(410, 300));
-    DrawWord("press /s to start", 17, 3, new Position(100,300));
+    DrawWord(textManager.title);
+    DrawWord(textManager.start);
+    DrawWord(textManager.name);
 }
 
 // **********************************************************************
@@ -227,8 +230,8 @@ void keyboard ( unsigned char key, int x, int y )
 
 	switch ( key )
 	{
-		case 27:        // Termina o programa qdo
-			exit ( 0 );   // a tecla ESC for pressionada
+		case 27:
+            Quit();
 			break;
         case ' ':
             player->Shoot();
@@ -318,24 +321,34 @@ void LoadNumbersModels()
 //  void DrawScore()
 //  Desenha a pontuação do jogador no canto superior direito da tela
 // **********************************************************************
-void DrawScore()
+void DrawNumber(int _number, Position* _pos, int _scale)
 {
-    //Desenha o numero
-    Position pos(WIDTHSCREEN-10,HEIGHTSCREEN-10);
     ObjectModel* number;
-    int aux = score;
-    while(aux > 0)
+    Position pos = *(_pos);
+
+    if(_number == 0)
     {
-        number = numbers.at(aux%10);
-        DrawObject(&pos, number, 0, number->sizePixel);
-        aux = aux/10;
-        pos.x  -= number->model.at(0).size() * (number->sizePixel+1);
+        DrawObject(&pos, numbers.at(0), 0, _scale);
+    }else
+    {
+        int aux = _number;
+        int length = 0;
+        while(aux > 0)
+        {
+            length++;
+            aux /= 10;
+        }
+        aux = _number;
+        pos.x += length * numbers.at(0)->model.at(0).size() * _scale;
+        while(length > 0)
+        {
+            number = numbers.at(aux%10);
+            DrawObject(&pos, number, 0, _scale);
+            length--;
+            aux /= 10;
+            pos.x  -= number->model.at(0).size() * (_scale+1);
+        }
     }
-
-    pos.x -= 100;
-
-    //Desenha a palavra
-    DrawWord("score", 5, 3, &pos);
 }
 // **********************************************************************
 //  void Draw ()
@@ -392,6 +405,28 @@ void VerifyUserActions()
         player->Rotate(true, deltaTime);
     }
 }
+// **********************************************************************
+// void LoadBestScore()
+// Carrega best score do arquivo
+// **********************************************************************
+void LoadBestScore()
+{
+    ifstream file;
+
+    file.open("BestScore.txt");
+
+    if(!file)
+    {
+        printf("BestScore.txt nao encontrado!\n");
+        return;
+    }
+
+    file >> bestScore;
+
+    printf("BestScore.txt carregado com sucesso!\n");
+    file.close();
+}
+
 // **********************************************************************
 //  void LoadConfig()
 // Carraga a quantidade de inimigos a ser combatido na partida, assim
@@ -491,23 +526,19 @@ void LoadColorsList()
 // **********************************************************************
 void GameOver()
 {
-    DrawWord("game over", 9, 10, new Position(175, 550));
+    DrawWord(textManager.gameOver);
 
-    if(win)
-    {
-        DrawWord("you won", 7, 6, new Position(280, 300));
-    }else
-    {
-        DrawWord("you lost", 8, 6, new Position(270, 300));
-    }
+    if(win) DrawWord(textManager.win);
+    else DrawWord(textManager.lose);
 
-    DrawWord("press", 5, 3, new Position(220, 80));
-    DrawWord("r", 1, 5, new Position(350, 80));
-    DrawWord("to restart", 10, 3, new Position(400, 80));
+    bestScore = (score > bestScore) ? score:bestScore;
 
-    DrawWord("press", 5, 3, new Position(220, 40));
-    DrawWord("esc", 3, 5, new Position(350, 40));
-    DrawWord("to quit", 7, 3, new Position(460, 40));
+    DrawWord(textManager.score);
+    DrawNumber(score, new Position(550, 290), 4);
+    DrawWord(textManager.bestScore);
+    DrawNumber(bestScore, new Position(550, 250), 4);
+    DrawWord(textManager.restart);
+    DrawWord(textManager.quit);
 }
 // **********************************************************************
 //  void LoadModel(ObjectModel* _modelObj, char fileName[])
@@ -571,11 +602,12 @@ void LoadModelsObjects()
     LoadModel(playerModel, "PShip.txt");
     heartModel = new ObjectModel();
     LoadModel(heartModel, "Heart.txt");
-
     //Le os modelos dos numeros
     LoadNumbersModels();
     //Le modelos do alfabeto
     LoadAlphabet();
+    //Le best score;
+    LoadBestScore();
 }
 // **********************************************************************
 //  void DrawGUI()
@@ -616,7 +648,8 @@ void DrawGUI()
     }
 
     //Desenha Score
-    DrawScore();
+    DrawWord(textManager.scoreInGame);
+    DrawNumber(score, new Position(740, 580), 2);
 }
 // **********************************************************************
 //  void DrawQuad(int _ix, int _iy)
@@ -820,32 +853,41 @@ void Process()
     }
 }
 // **********************************************************************
-// void DrawWord(char _word[], int _length, int _scale, Position* _pos)
+// void DrawWord(Text* _text)
 // Desenha uma palavra na tela
 // **********************************************************************
-void DrawWord(char _word[], int _length, int _scale, Position* _pos)
+void DrawWord(Text* _text)
 {
     int index,offset = 97;
+    int token;
+    bool caps = false;
+    Position pos = *(_text->pos);
     ObjectModel* lyric;
-    for(index = 0; index < _length; index++)
+
+    for(index = 0; index < _text->length; index++)
     {
-        if (_word[index] == '/')
+        token = _text->text[index];
+
+        if(token == '/')
         {
-            index++;
-            int padding = lyric->model.at(0).size() * _scale;
-            lyric = lyrics.at(_word[index] - offset);
-            _pos->x += padding;
-
-            DrawObject(_pos, lyric, 0, _scale + 3);
-
-            _pos->x += padding * 2;
+            caps = !caps;
             continue;
-        }else if(_word[index] != 32)
-        {
-            lyric = lyrics.at(_word[index] - offset);
-            DrawObject(_pos, lyric, 0, _scale);
         }
-        _pos->x += lyric->model.at(0).size() * _scale + 5;
+
+        if(token != ' ')
+        {
+            lyric = lyrics.at(token - offset);
+            if (caps)
+            {
+                DrawObject(&pos, lyric, 0, _text->scale + 3);
+                if(_text->text[index + 1] != '/') pos.x += lyric->model.at(0).size() * _text->scale;
+            }else
+            {
+                DrawObject(&pos, lyric, 0, _text->scale);
+            }
+        }
+
+        pos.x += lyric->model.at(0).size() * _text->scale + 5;
     }
 }
 // **********************************************************************
@@ -877,6 +919,28 @@ void LoadAlphabet()
         file.close();
     }
     printf("Alfabeto carregados com sucesso!\n");
+}
+// **********************************************************************
+// void Quit()
+// Salva o melhor score e finaliza o jogo
+// **********************************************************************
+void Quit()
+{
+    ofstream file;
+
+    file.open("BestScore.txt");
+    if(!file)
+    {
+        printf("BestScore.txt nao encontrado!\n");
+        return;
+    }
+
+    file << bestScore;
+
+    printf("BestScore salvo com sucesso!\n");
+    file.close();
+
+    exit( 0 );
 }
 
 // **********************************************************************

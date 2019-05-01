@@ -8,6 +8,7 @@ class Position
         float x;
         float y;
 
+        Position();
         Position(float _x, float _y);
         virtual ~Position();
 
