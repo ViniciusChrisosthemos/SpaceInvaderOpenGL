@@ -964,7 +964,7 @@ int  main ( int argc, char** argv )
 
     // Cria a janela na tela, definindo o nome da
     // que aparecera na barra de título da janela.
-    glutCreateWindow    ( "Primeiro Programa em OpenGL" );
+    glutCreateWindow    ( "Space Invaders OpenGL" );
 
     // executa algumas inicializações
     init ();

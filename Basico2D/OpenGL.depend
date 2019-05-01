@@ -114,7 +114,7 @@
 
 1554727762 D
 
-1556736936 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
+1556740007 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\programabasicoopengl.cpp
 	<iostream>
 	<string>
 	<cmath>
@@ -643,7 +643,7 @@
 1556729550 c:\users\vinic\desktop\spaceinvaderopengl\basico2d\include\text.h
 	<Position.h>
 
-1556735947 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\textmanager.cpp
+1556738359 source:c:\users\vinic\desktop\spaceinvaderopengl\basico2d\src\textmanager.cpp
 	"TextManager.h"
 	<Text.h>
 
