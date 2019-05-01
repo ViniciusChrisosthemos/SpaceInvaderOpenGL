@@ -67,6 +67,7 @@ int score;
 vector<ObjectModel*> enemysModels;
 vector<ObjectModel*> bulletModels;
 vector<ObjectModel*> numbers;
+vector<ObjectModel*> lyrics;
 vector<EnemyShip*> enemysList;
 vector<ColorRGB*> colorsList;
 vector<Bullet*> bulletsInGame;
@@ -88,22 +89,24 @@ void keyboard ( unsigned char key, int x, int y );
 void arrow_keys ( int a_keys, int x, int y );
 
 // Métodos do Jogo
-void DrawObject(Position* pos, ObjectModel* _model, float _angle, float _sizeCell);
-void DrawQuad(int _ix, int _iy);
+void InitializeVariables();
 void LoadColorsList();
 void LoadModelsObjects();
 void LoadModel(ObjectModel* _modelObj, char fileName[]);
-void InitializeVariables();
-void Process();
-void Draw();
-bool IsColliding(Object* obj1, Object* obj2);
-void GameOver();
-void DrawGUI();
-void VerifyUserActions();
-void Debug();
 void LoadConfig();
 void LoadNumbersModels();
+void LoadAlphabet();
+void Process();
+void GameOver();
+void VerifyUserActions();
+void Draw();
+void DrawGUI();
 void DrawScore();
+void DrawWord(char _word[], int _length, int _size, Position* pos);
+void DrawObject(Position* pos, ObjectModel* _model, float _angle, float _sizeCell);
+void DrawQuad(int _ix, int _iy);
+void Debug();
+bool IsColliding(Object* obj1, Object* obj2);
 // **********************************************************************
 //  void animate ( unsigned char key, int x, int y )
 // **********************************************************************
@@ -187,7 +190,6 @@ void display( void )
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
     if(canProcess)
     {
 
@@ -202,7 +204,6 @@ void display( void )
                 break;
         }
     }
-
 	glutSwapBuffers();
 }
 
@@ -294,6 +295,7 @@ void LoadNumbersModels()
 // **********************************************************************
 void DrawScore()
 {
+    //Desenha o numero
     Position pos(WIDTHSCREEN-10,HEIGHTSCREEN-10);
     ObjectModel* number;
     int aux = score;
@@ -304,6 +306,11 @@ void DrawScore()
         aux = aux/10;
         pos.x  -= number->model.at(0).size() * (number->sizePixel+1);
     }
+
+    pos.x -= 100;
+
+    //Desenha a palavra
+    DrawWord("score", 5, 3, &pos);
 }
 
 // **********************************************************************
@@ -796,7 +803,54 @@ void Process()
         }
     }
 }
+// **********************************************************************
+// void DrawWord(char _word[], int _length, int _size, Position* _pos)
+// Desenha uma palavra na tela
+// **********************************************************************
+void DrawWord(char _word[], int _length, int _size, Position* _pos)
+{
+    int index,offset = 97;
+    ObjectModel* lyric;
+    for(index = 0; index < _length; index++)
+    {
+        if(_word[index] != 32)
+        {
+            lyric = lyrics.at(_word[index] - offset);
+            DrawObject(_pos, lyric, 0, _size);
+        }
+        _pos->x += lyric->model.at(0).size() * _size + 5;
+    }
+}
+// **********************************************************************
+// void LoadAlphabet()
+// Carrega as letras do alfabeto
+// **********************************************************************
+void LoadAlphabet()
+{
+    ifstream file;
+    char fileName[10];
+    ObjectModel* lyricModel;
 
+    for(int i=97; i<123; i++)
+    {
+        sprintf(fileName,"%c.txt",i);
+
+        file.open(fileName);
+
+        if(file == NULL)
+        {
+            printf("%c.txt não encontrado!\n",i + '0');
+            return;
+        }
+
+        lyricModel = new ObjectModel();
+        LoadModel(lyricModel, fileName);
+        lyrics.push_back(lyricModel);
+
+        file.close();
+    }
+    printf("Alfabeto carregados com sucesso!\n");
+}
 
 // **********************************************************************
 //  void main ( int argc, char** argv )
@@ -808,6 +862,8 @@ int  main ( int argc, char** argv )
     LoadModelsObjects();
     InitializeVariables();
     printf("Variaveis iniciadas\n");
+
+    LoadAlphabet();
 
     glutInit            ( &argc, argv );
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB );
