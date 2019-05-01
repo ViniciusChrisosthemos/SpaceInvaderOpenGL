@@ -50,7 +50,7 @@ static struct timeval last_idle_time;
 #include <glut.h>
 #endif
 
-enum State{INGAME,GAMEOVER};
+enum State{MENU,INGAME,GAMEOVER};
 
 // Variáveis Globais
 State state;
@@ -73,9 +73,6 @@ vector<ColorRGB*> colorsList;
 vector<Bullet*> bulletsInGame;
 ObjectModel* playerModel;
 ObjectModel* heartModel;
-ObjectModel* gameOverScreen;
-ObjectModel* winMessage;
-ObjectModel* loseMessage;
 PlayerShip* player;
 ColorRGB* backgroundColor;
 
@@ -143,7 +140,7 @@ void animate()
     //  cout << "Espaco Pressionado" << endl;
 
     // Redesenha
-    if(deltaTime < 1 & deltaTime != 0) canProcess = true;
+    if((deltaTime < 1) & (deltaTime != 0)) canProcess = true;
     glutPostRedisplay();
 }
 // **********************************************************************
@@ -174,6 +171,17 @@ void reshape( int w, int h )
     glLoadIdentity();
     glOrtho(0,10,0,10,0,1);
 }
+
+void Menu()
+{
+    DrawWord("space invaders", 14, 10, new Position(45,560));
+    DrawWord("computacao grafica", 18, 3, new Position(220, 500));
+    DrawWord("vinicius chrisosthemos teixeira", 31, 2, new Position(160, 20));
+    DrawWord("pressione", 9, 3, new Position(170, 300));
+    DrawWord("s", 1, 5, new Position(370, 300));
+    DrawWord("para iniciar", 12, 3, new Position(410, 300));
+}
+
 // **********************************************************************
 //  void display( void )
 // **********************************************************************
@@ -190,11 +198,14 @@ void display( void )
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	// Coloque aqui as chamadas das rotinas que desenha os objetos
 	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
     if(canProcess)
     {
-
         switch(state)
         {
+            case MENU:
+                Menu();
+                break;
             case INGAME:
                 Process();
                 Draw();
@@ -223,6 +234,19 @@ void keyboard ( unsigned char key, int x, int y )
             break;
         case 'p':
             debug = !debug;
+            break;
+        case 's':
+            if(state == MENU)
+            {
+                state = INGAME;
+            }
+            break;
+        case 'r':
+            if(state == GAMEOVER)
+            {
+                InitializeVariables();
+                state = INGAME;
+            }
             break;
             /*
         case 'w':
@@ -312,7 +336,6 @@ void DrawScore()
     //Desenha a palavra
     DrawWord("score", 5, 3, &pos);
 }
-
 // **********************************************************************
 //  void Draw ()
 // Desenha todos os objetos do jogo na tela
@@ -411,7 +434,6 @@ bool IsColliding(Object* obj1, Object* obj2)
 void InitializeVariables()
 {
     //Inicia variaveis do ambiente
-    state = INGAME;
     debug = false;
     WIDTHSCREEN = 800;
     HEIGHTSCREEN = 600;
@@ -468,26 +490,23 @@ void LoadColorsList()
 // **********************************************************************
 void GameOver()
 {
-    int padding = 50;
-    Position* pos = new Position(WIDTHSCREEN/2,HEIGHTSCREEN-(gameOverScreen->model.size()/2) * gameOverScreen->sizePixel - padding);
-    DrawObject(pos, gameOverScreen, 0, gameOverScreen->sizePixel);
+    DrawWord("game over", 9, 10, new Position(175, 550));
 
     if(win)
     {
-        pos->y = padding + winMessage->model.size()*winMessage->sizePixel;
-        DrawObject(pos, winMessage, 0, winMessage->sizePixel);
+        DrawWord("you won", 7, 6, new Position(280, 300));
     }else
     {
-        pos->y = padding + loseMessage->model.size()*loseMessage->sizePixel;
-        DrawObject(pos, loseMessage, 0, loseMessage->sizePixel);
+        DrawWord("you lost", 8, 6, new Position(270, 300));
     }
 
-    if(GetKeyState('R') & 0x8000)
-    {
-        InitializeVariables();
-        return;
-    }
-    //exit(0);
+    DrawWord("press", 5, 3, new Position(220, 80));
+    DrawWord("r", 1, 5, new Position(350, 80));
+    DrawWord("to restart", 10, 3, new Position(400, 80));
+
+    DrawWord("press", 5, 3, new Position(220, 40));
+    DrawWord("esc", 3, 5, new Position(350, 40));
+    DrawWord("to quit", 7, 3, new Position(460, 40));
 }
 // **********************************************************************
 //  void LoadModel(ObjectModel* _modelObj, char fileName[])
@@ -551,15 +570,11 @@ void LoadModelsObjects()
     LoadModel(playerModel, "PShip.txt");
     heartModel = new ObjectModel();
     LoadModel(heartModel, "Heart.txt");
-    gameOverScreen = new ObjectModel();
-    LoadModel(gameOverScreen, "GameOverScreen.txt");
-    winMessage = new ObjectModel();
-    LoadModel(winMessage, "WinMessage.txt");
-    loseMessage = new ObjectModel();
-    LoadModel(loseMessage, "LoseMessage.txt");
 
     //Le os modelos dos numeros
     LoadNumbersModels();
+    //Le modelos do alfabeto
+    LoadAlphabet();
 }
 // **********************************************************************
 //  void DrawGUI()
@@ -862,8 +877,7 @@ int  main ( int argc, char** argv )
     LoadModelsObjects();
     InitializeVariables();
     printf("Variaveis iniciadas\n");
-
-    LoadAlphabet();
+    state = MENU;
 
     glutInit            ( &argc, argv );
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB );
