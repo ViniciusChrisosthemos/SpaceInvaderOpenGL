@@ -98,7 +98,16 @@
 		<Unit filename="Pship2.txt" />
 		<Unit filename="Util.cpp" />
 		<Unit filename="WinMessage.txt" />
+		<Unit filename="a.txt" />
+		<Unit filename="b.txt" />
+		<Unit filename="c.txt" />
 		<Unit filename="colors.txt" />
+		<Unit filename="d.txt" />
+		<Unit filename="e.txt" />
+		<Unit filename="f.txt" />
+		<Unit filename="g.txt" />
+		<Unit filename="h.txt" />
+		<Unit filename="i.txt" />
 		<Unit filename="include/Bullet.h" />
 		<Unit filename="include/ColorRGB.h" />
 		<Unit filename="include/EnemyShip.h" />
@@ -106,6 +115,16 @@
 		<Unit filename="include/ObjectModel.h" />
 		<Unit filename="include/PlayerShip.h" />
 		<Unit filename="include/Position.h" />
+		<Unit filename="j.txt" />
+		<Unit filename="k.txt" />
+		<Unit filename="l.txt" />
+		<Unit filename="m.txt" />
+		<Unit filename="n.txt" />
+		<Unit filename="o.txt" />
+		<Unit filename="p.txt" />
+		<Unit filename="q.txt" />
+		<Unit filename="r.txt" />
+		<Unit filename="s.txt" />
 		<Unit filename="src/Bullet.cpp" />
 		<Unit filename="src/ColorRGB.cpp" />
 		<Unit filename="src/EnemyShip.cpp" />
@@ -113,6 +132,13 @@
 		<Unit filename="src/ObjectModel.cpp" />
 		<Unit filename="src/PlayerShip.cpp" />
 		<Unit filename="src/Position.cpp" />
+		<Unit filename="t.txt" />
+		<Unit filename="u.txt" />
+		<Unit filename="v.txt" />
+		<Unit filename="w.txt" />
+		<Unit filename="x.txt" />
+		<Unit filename="y.txt" />
+		<Unit filename="z.txt" />
 		<Extensions>
 			<code_completion />
 			<debugger />

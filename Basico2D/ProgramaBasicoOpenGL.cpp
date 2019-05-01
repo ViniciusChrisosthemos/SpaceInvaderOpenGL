@@ -99,7 +99,7 @@ void VerifyUserActions();
 void Draw();
 void DrawGUI();
 void DrawScore();
-void DrawWord(char _word[], int _length, int _size, Position* pos);
+void DrawWord(char _word[], int _length, int _scale, Position* pos);
 void DrawObject(Position* pos, ObjectModel* _model, float _angle, float _sizeCell);
 void DrawQuad(int _ix, int _iy);
 void Debug();
@@ -177,9 +177,10 @@ void Menu()
     DrawWord("space invaders", 14, 10, new Position(45,560));
     DrawWord("computacao grafica", 18, 3, new Position(220, 500));
     DrawWord("vinicius chrisosthemos teixeira", 31, 2, new Position(160, 20));
-    DrawWord("pressione", 9, 3, new Position(170, 300));
-    DrawWord("s", 1, 5, new Position(370, 300));
-    DrawWord("para iniciar", 12, 3, new Position(410, 300));
+    //DrawWord("pressione", 9, 3, new Position(170, 300));
+    //DrawWord("s", 1, 5, new Position(370, 300));
+    //DrawWord("para iniciar", 12, 3, new Position(410, 300));
+    DrawWord("press /s to start", 17, 3, new Position(100,300));
 }
 
 // **********************************************************************
@@ -819,21 +820,32 @@ void Process()
     }
 }
 // **********************************************************************
-// void DrawWord(char _word[], int _length, int _size, Position* _pos)
+// void DrawWord(char _word[], int _length, int _scale, Position* _pos)
 // Desenha uma palavra na tela
 // **********************************************************************
-void DrawWord(char _word[], int _length, int _size, Position* _pos)
+void DrawWord(char _word[], int _length, int _scale, Position* _pos)
 {
     int index,offset = 97;
     ObjectModel* lyric;
     for(index = 0; index < _length; index++)
     {
-        if(_word[index] != 32)
+        if (_word[index] == '/')
+        {
+            index++;
+            int padding = lyric->model.at(0).size() * _scale;
+            lyric = lyrics.at(_word[index] - offset);
+            _pos->x += padding;
+
+            DrawObject(_pos, lyric, 0, _scale + 3);
+
+            _pos->x += padding * 2;
+            continue;
+        }else if(_word[index] != 32)
         {
             lyric = lyrics.at(_word[index] - offset);
-            DrawObject(_pos, lyric, 0, _size);
+            DrawObject(_pos, lyric, 0, _scale);
         }
-        _pos->x += lyric->model.at(0).size() * _size + 5;
+        _pos->x += lyric->model.at(0).size() * _scale + 5;
     }
 }
 // **********************************************************************
