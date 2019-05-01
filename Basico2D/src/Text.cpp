@@ -1,6 +1,9 @@
 #include "Text.h"
 #include <Position.h>
-
+// **********************************************************************
+// Text::Text(char _text[1024], int _length, int _scale, Position* _pos)
+// Construtor
+// **********************************************************************
 Text::Text(char _text[1024], int _length, int _scale, Position* _pos)
 {
     for(int i=0; i<_length; i++)
@@ -11,7 +14,10 @@ Text::Text(char _text[1024], int _length, int _scale, Position* _pos)
     scale = _scale;
     pos = _pos;
 }
-
+// **********************************************************************
+// Text::Text(char _text[1024], int _length, int _scale, Position* _pos)
+// Desconstrutor
+// **********************************************************************
 Text::~Text()
 {
     //dtor

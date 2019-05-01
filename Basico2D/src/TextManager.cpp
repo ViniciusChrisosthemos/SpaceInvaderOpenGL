@@ -1,6 +1,9 @@
 #include "TextManager.h"
 #include <Text.h>
-
+// **********************************************************************
+// TextManager::TextManager()
+// Construtor
+// **********************************************************************
 TextManager::TextManager()
 {
     title =         new Text("space invaders", 14, 10, new Position(45, 550));
@@ -15,7 +18,10 @@ TextManager::TextManager()
     restart =       new Text("press /r/ to restart", 20, 4, new Position(200, 100));
     quit =          new Text("press /esc/ to quit", 19, 4, new Position(190, 50));
 }
-
+// **********************************************************************
+// TextManager::~TextManager()
+// Desconstrutor
+// **********************************************************************
 TextManager::~TextManager()
 {
     //dtor

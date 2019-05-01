@@ -83,7 +83,7 @@ void EnemyShip::MoveEShip(float _deltaTime)
 
         float nextX = p3->x*2.0 - p2->x;
         float nextY = p3->y*2.0 - p2->y;
-        float x,y,m1;
+        float x = nextX,y = nextY,m1;
 
         //Limita a continuação de derivada a não passar da tela
         if(nextX >= xLimit)
@@ -97,7 +97,9 @@ void EnemyShip::MoveEShip(float _deltaTime)
             x = 0;
             m1 = (nextY - p3->y) / (nextX - p3->x);
             y = p3->y + (0 - p3->x) * m1;
-        }else if(nextY >= yLimit)
+        }
+
+        if(nextY >= yLimit)
         {
             m1 = (nextX - p3->x) / (nextY - p3->y);
             x = p3->x + (yLimit - p3->y) * m1;
@@ -107,10 +109,6 @@ void EnemyShip::MoveEShip(float _deltaTime)
             m1 = (nextX - p3->x) / (nextY - p3->y);
             x = p3->x + (0 - p3->y) * m1;
             y = 0;
-        }else
-        {
-            x = nextX;
-            y = nextY;
         }
 
         p1 = new Position(x,y);
@@ -120,7 +118,7 @@ void EnemyShip::MoveEShip(float _deltaTime)
             p3 = new Position(target->x,target->y);
         }else
         {
-            p2 = new Position(rand()%xLimit,rand()%yLimit);
+            p3 = new Position(rand()%xLimit,rand()%yLimit);
         }
     };
 }
@@ -137,7 +135,7 @@ void EnemyShip::LookToTarget()
     float module = sqrt(v1.x*v1.x + v1.y*v1.y)*sqrt(v2.x*v2.x + v2.y*v2.y);
     float newAngle = acos(scaleProduct/module) * (180/M_PI);
 
-    angle = (target->y < coordinate->y) ? (-newAngle - 0):(newAngle - 0);
+    angle = (target->y < coordinate->y) ? -newAngle:newAngle;
 }
 // **********************************************************************
 // void Shoot()

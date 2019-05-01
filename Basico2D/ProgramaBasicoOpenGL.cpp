@@ -70,7 +70,7 @@ int bestScore;
 vector<ObjectModel*> enemysModels;
 vector<ObjectModel*> bulletModels;
 vector<ObjectModel*> numbers;
-vector<ObjectModel*> lyrics;
+vector<ObjectModel*> letters;
 vector<EnemyShip*> enemysList;
 vector<ColorRGB*> colorsList;
 vector<Bullet*> bulletsInGame;
@@ -91,17 +91,18 @@ void arrow_keys ( int a_keys, int x, int y );
 // Métodos do Jogo
 void InitializeVariables();
 void LoadColorsList();
-void LoadModelsObjects();
+void LoadObjectsModels();
 void LoadModel(ObjectModel* _modelObj, char fileName[]);
 void LoadConfig();
 void LoadNumbersModels();
 void LoadAlphabet();
 void LoadBestScore();
 void Process();
-void GameOver();
 void VerifyUserActions();
 void Draw();
 void DrawGUI();
+void DrawMenu();
+void DrawGameOver();
 void DrawScore();
 void DrawWord(Text* _text);
 void DrawNumber(int _number, Position* _pos, int _scale);
@@ -178,14 +179,6 @@ void reshape( int w, int h )
     glLoadIdentity();
     glOrtho(0,10,0,10,0,1);
 }
-
-void Menu()
-{
-    DrawWord(textManager.title);
-    DrawWord(textManager.start);
-    DrawWord(textManager.name);
-}
-
 // **********************************************************************
 //  void display( void )
 // **********************************************************************
@@ -208,14 +201,14 @@ void display( void )
         switch(state)
         {
             case MENU:
-                Menu();
+                DrawMenu();
                 break;
             case INGAME:
                 Process();
                 Draw();
                 break;
             case GAMEOVER:
-                GameOver();
+                DrawGameOver();
                 break;
         }
     }
@@ -252,17 +245,6 @@ void keyboard ( unsigned char key, int x, int y )
                 state = INGAME;
             }
             break;
-            /*
-        case 'w':
-            player->MoveShip(0,WIDTHSCREEN,0,HEIGHTSCREEN);
-            break;
-        case 'a':
-            player->Rotate(false);
-            break;
-        case 'd':
-            player->Rotate(true);
-            break;
-        */
 		default:
 			break;
 	}
@@ -286,6 +268,16 @@ void arrow_keys ( int a_keys, int x, int y )
 		default:
 			break;
 	}
+}
+// **********************************************************************
+//  void DrawMenu()
+//  trata o redimensionamento da janela OpenGL
+// **********************************************************************
+void DrawMenu()
+{
+    DrawWord(textManager.title);
+    DrawWord(textManager.start);
+    DrawWord(textManager.name);
 }
 // **********************************************************************
 //  LoadNumbersModels()
@@ -318,8 +310,8 @@ void LoadNumbersModels()
     printf("Numeros carregados com sucesso!\n");
 }
 // **********************************************************************
-//  void DrawScore()
-//  Desenha a pontuação do jogador no canto superior direito da tela
+//  void DrawNumber(int _number, Position* _pos, int _scale)
+//  Desenha o numero na localização e escala informada
 // **********************************************************************
 void DrawNumber(int _number, Position* _pos, int _scale)
 {
@@ -443,6 +435,8 @@ void LoadConfig()
         return;
     }
 
+    file >> WIDTHSCREEN;
+    file >> HEIGHTSCREEN;
     file >> ENEMYAMOUNT;
     file >> ENEMYMODELS;
     file >> BULLETMODELS;
@@ -471,8 +465,6 @@ void InitializeVariables()
 {
     //Inicia variaveis do ambiente
     debug = false;
-    WIDTHSCREEN = 800;
-    HEIGHTSCREEN = 600;
     score = 0;
     backgroundColor = colorsList.at(0);
 
@@ -521,10 +513,10 @@ void LoadColorsList()
     file.close();
 }
 // **********************************************************************
-//  void GameOver()
+//  void DrawGameOver()
 // Desenha a tela de Game Over
 // **********************************************************************
-void GameOver()
+void DrawGameOver()
 {
     DrawWord(textManager.gameOver);
 
@@ -574,10 +566,10 @@ void LoadModel(ObjectModel* _modelObj, char fileName[])
     file.close();
 }
 // **********************************************************************
-//  void LoadModelsObjects()
+//  void LoadObjectsModels()
 // Carrega os modelos dos arquivos txt
 // **********************************************************************
-void LoadModelsObjects()
+void LoadObjectsModels()
 {
     char fileName[1024];
     ObjectModel* enemyModel;
@@ -862,7 +854,7 @@ void DrawWord(Text* _text)
     int token;
     bool caps = false;
     Position pos = *(_text->pos);
-    ObjectModel* lyric;
+    ObjectModel* letter;
 
     for(index = 0; index < _text->length; index++)
     {
@@ -876,18 +868,18 @@ void DrawWord(Text* _text)
 
         if(token != ' ')
         {
-            lyric = lyrics.at(token - offset);
+            letter = letters.at(token - offset);
             if (caps)
             {
-                DrawObject(&pos, lyric, 0, _text->scale + 3);
-                if(_text->text[index + 1] != '/') pos.x += lyric->model.at(0).size() * _text->scale;
+                DrawObject(&pos, letter, 0, _text->scale + 3);
+                if(_text->text[index + 1] != '/') pos.x += letter->model.at(0).size() * _text->scale;
             }else
             {
-                DrawObject(&pos, lyric, 0, _text->scale);
+                DrawObject(&pos, letter, 0, _text->scale);
             }
         }
 
-        pos.x += lyric->model.at(0).size() * _text->scale + 5;
+        pos.x += letter->model.at(0).size() * _text->scale + 5;
     }
 }
 // **********************************************************************
@@ -898,7 +890,7 @@ void LoadAlphabet()
 {
     ifstream file;
     char fileName[10];
-    ObjectModel* lyricModel;
+    ObjectModel* letterModel;
 
     for(int i=97; i<123; i++)
     {
@@ -908,13 +900,13 @@ void LoadAlphabet()
 
         if(file == NULL)
         {
-            printf("%c.txt não encontrado!\n",i + '0');
+            printf("%c.txt não encontrado!\n",i);
             return;
         }
 
-        lyricModel = new ObjectModel();
-        LoadModel(lyricModel, fileName);
-        lyrics.push_back(lyricModel);
+        letterModel = new ObjectModel();
+        LoadModel(letterModel, fileName);
+        letters.push_back(letterModel);
 
         file.close();
     }
@@ -950,7 +942,7 @@ int  main ( int argc, char** argv )
 {
     LoadConfig();
     LoadColorsList();
-    LoadModelsObjects();
+    LoadObjectsModels();
     InitializeVariables();
     printf("Variaveis iniciadas\n");
     state = MENU;

@@ -96,7 +96,6 @@
 		<Unit filename="PShip.txt" />
 		<Unit filename="ProgramaBasicoOpenGL.cpp" />
 		<Unit filename="Pship2.txt" />
-		<Unit filename="Util.cpp" />
 		<Unit filename="WinMessage.txt" />
 		<Unit filename="a.txt" />
 		<Unit filename="b.txt" />
@@ -115,6 +114,8 @@
 		<Unit filename="include/ObjectModel.h" />
 		<Unit filename="include/PlayerShip.h" />
 		<Unit filename="include/Position.h" />
+		<Unit filename="include/Text.h" />
+		<Unit filename="include/TextManager.h" />
 		<Unit filename="j.txt" />
 		<Unit filename="k.txt" />
 		<Unit filename="l.txt" />
@@ -132,6 +133,8 @@
 		<Unit filename="src/ObjectModel.cpp" />
 		<Unit filename="src/PlayerShip.cpp" />
 		<Unit filename="src/Position.cpp" />
+		<Unit filename="src/Text.cpp" />
+		<Unit filename="src/TextManager.cpp" />
 		<Unit filename="t.txt" />
 		<Unit filename="u.txt" />
 		<Unit filename="v.txt" />
