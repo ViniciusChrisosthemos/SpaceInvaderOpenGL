@@ -79,7 +79,8 @@ void EnemyShip::MoveEShip(float _deltaTime)
     if(t > 1)
     {
         t = 0;
-        p0 = p3;
+        p0->x = p3->x;
+        p0->y = p3->y;
 
         float nextX = p3->x*2.0 - p2->x;
         float nextY = p3->y*2.0 - p2->y;
@@ -111,14 +112,20 @@ void EnemyShip::MoveEShip(float _deltaTime)
             y = 0;
         }
 
-        p1 = new Position(x,y);
-        p2 = new Position(rand()%xLimit,rand()%yLimit);
+        p1->x = x;
+        p1->y = y;
+
+        p2->x = rand()%xLimit;
+        p2->y = rand()%yLimit;
+
         if(rand()%2)
         {
-            p3 = new Position(target->x,target->y);
+            p3->x = target->x;
+            p3->y = target->y;
         }else
         {
-            p3 = new Position(rand()%xLimit,rand()%yLimit);
+            p3->x = rand()%xLimit;
+            p3->y = rand()%yLimit;
         }
     };
 }
