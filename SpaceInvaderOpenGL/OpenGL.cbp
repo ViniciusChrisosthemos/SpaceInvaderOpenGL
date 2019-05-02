@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="OpenGL" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug-Linux">
+				<Option output="./Imagens" prefix_auto="1" extension_auto="1" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="20" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add directory="include" />
+					<Add directory="GL" />
+				</Compiler>
+				<Linker>
+					<Add library="GL" />
+					<Add library="GLU" />
+					<Add library="libglut" />
+					<Add library="jpeg" />
+					<Add directory="lib" />
+				</Linker>
+			</Target>
+			<Target title="Debug-MacOS">
+				<Option output="./exemploGLUT" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="./" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="20" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-framework CoreFoundation" />
+					<Add option="-framework GLUT" />
+					<Add option="-framework OpenGL" />
+				</Linker>
+			</Target>
+			<Target title="Debug-Windows">
+				<Option output="./OpenGL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="20" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-fexceptions" />
+					<Add option="-Wno-write-strings" />
+					<Add option="-Wno-sign-compare" />
+					<Add option="-Wno-narrowing" />
+					<Add option="-Wno-deprecated-declarations" />
+					<Add option="-Wno-unused-but-set-variable" />
+					<Add option="-DFREEGLUT_STATIC" />
+					<Add directory="GL" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add library="libFreeGLUT.a" />
+					<Add library="glu32" />
+					<Add library="opengl32" />
+					<Add library="winmm" />
+					<Add library="gdi32" />
+					<Add directory="lib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-fexceptions" />
+			<Add option="-Wno-write-strings" />
+			<Add option="-Wno-sign-compare" />
+			<Add option="-Wno-narrowing" />
+			<Add option="-Wno-deprecated-declarations" />
+		</Compiler>
+		<Unit filename="Bullet1.txt" />
+		<Unit filename="Bullet2.txt" />
+		<Unit filename="Bullet3.txt" />
+		<Unit filename="Bullet4.txt" />
+		<Unit filename="Config.txt" />
+		<Unit filename="EShip1.txt" />
+		<Unit filename="EShip2.txt" />
+		<Unit filename="EShip3.txt" />
+		<Unit filename="EShip4.txt" />
+		<Unit filename="EShip5.txt" />
+		<Unit filename="GameOverScreen.txt" />
+		<Unit filename="Heart.txt" />
+		<Unit filename="LoseMessage.txt" />
+		<Unit filename="PShip.txt" />
+		<Unit filename="ProgramaBasicoOpenGL.cpp" />
+		<Unit filename="Pship2.txt" />
+		<Unit filename="WinMessage.txt" />
+		<Unit filename="a.txt" />
+		<Unit filename="b.txt" />
+		<Unit filename="c.txt" />
+		<Unit filename="colors.txt" />
+		<Unit filename="d.txt" />
+		<Unit filename="e.txt" />
+		<Unit filename="f.txt" />
+		<Unit filename="g.txt" />
+		<Unit filename="h.txt" />
+		<Unit filename="i.txt" />
+		<Unit filename="include/Bullet.h" />
+		<Unit filename="include/ColorRGB.h" />
+		<Unit filename="include/EnemyShip.h" />
+		<Unit filename="include/Object.h" />
+		<Unit filename="include/ObjectModel.h" />
+		<Unit filename="include/PlayerShip.h" />
+		<Unit filename="include/Position.h" />
+		<Unit filename="include/Text.h" />
+		<Unit filename="include/TextManager.h" />
+		<Unit filename="j.txt" />
+		<Unit filename="k.txt" />
+		<Unit filename="l.txt" />
+		<Unit filename="m.txt" />
+		<Unit filename="n.txt" />
+		<Unit filename="o.txt" />
+		<Unit filename="p.txt" />
+		<Unit filename="q.txt" />
+		<Unit filename="r.txt" />
+		<Unit filename="s.txt" />
+		<Unit filename="src/Bullet.cpp" />
+		<Unit filename="src/ColorRGB.cpp" />
+		<Unit filename="src/EnemyShip.cpp" />
+		<Unit filename="src/Object.cpp" />
+		<Unit filename="src/ObjectModel.cpp" />
+		<Unit filename="src/PlayerShip.cpp" />
+		<Unit filename="src/Position.cpp" />
+		<Unit filename="src/Text.cpp" />
+		<Unit filename="src/TextManager.cpp" />
+		<Unit filename="t.txt" />
+		<Unit filename="u.txt" />
+		<Unit filename="v.txt" />
+		<Unit filename="w.txt" />
+		<Unit filename="x.txt" />
+		<Unit filename="y.txt" />
+		<Unit filename="z.txt" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
